@@ -16,22 +16,28 @@ import streamlit as st
 # 3lAj61vj.H5YQXu95lhkyN599SobVaapydeOiU21j
 USERNAME = "__key__"
 PASSWORD = "3lAj61vj.H5YQXu95lhkyN599SobVaapydeOiU21j"
+# PASSWORD ="EMkFOzzE.l2Cs8pneerhQHfFZyjc1UBUX6cZLu0it"
 HEADERS = {
     "username": USERNAME,
     "password": PASSWORD,
     "Content-Type": "application/json"
     }
-mn_name= "DSS1-1.0.1"
+# mn_name= "DSS1-1.0.1"
+mn_name="DSS-2"
+
 url = "https://demo.lizard.net/api/v4/monitoringnetworks/?name__icontains=" + mn_name
 r = requests.get(url, headers = HEADERS)
 # print (r.json())
 
 mn = r.json()["results"]
+print(mn)
 
 url2 = "https://demo.lizard.net/api/v4/monitoringnetworks/"+mn[0]['uuid']+"/timeseries/"
+print (url2)
 querydata = requests.get(url2,headers=HEADERS,params= {'page_size':'10000'}).json()['results']
 timeseries_list = pd.DataFrame(querydata)
 st.write(timeseries_list[0:4])
+print(querydata)
 
 # print(timeseries_list[0:4])# print only the first 5 rows of the dataframe
 # url3 = timeseries_list['url'][0]

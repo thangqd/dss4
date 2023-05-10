@@ -1,9 +1,9 @@
-from osgeo import gdal
-from osgeo import ogr
+//from osgeo import gdal
+//from osgeo import ogr
 import os
 os.getcwd()
-import pandas as pd
-import geopandas as gpd
+//import pandas as pd
+//import geopandas as gpd
 import requests
 import streamlit as st
 

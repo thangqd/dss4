@@ -32,17 +32,18 @@ url2 = "https://demo.lizard.net/api/v4/monitoringnetworks/"+mn[0]['uuid']+"/time
 querydata = requests.get(url2,headers=HEADERS,params= {'page_size':'10000'}).json()['results']
 timeseries_list = pd.DataFrame(querydata)
 # print(timeseries_list[0:4])# print only the first 5 rows of the dataframe
-url3 = timeseries_list['url'][0]
-r = requests.get(url3, headers = HEADERS)
+# url3 = timeseries_list['url'][0]
+# r = requests.get(url3, headers = HEADERS)
 # print(r.json()["code"])
 # print(r.json()["location"])
 
-url = timeseries_list['url'][0]+"events/"
+#url4 = timeseries_list['url'][0]+"events/"
 # print(url)
-time_series_events = pd.DataFrame(requests.get(url=url,headers=HEADERS,params= {'page_size':'10000'}).json()['results'])
+#time_series_events = pd.DataFrame(requests.get(url=url4,headers=HEADERS,params= {'page_size':'10000'}).json()['results'])
 
 # print(time_series_events[0:5])
-st.write(time_series_events[0:5])
+#st.write(time_series_events[0:5])
+st.write(r.json())
 
 # df= pd.read_csv(csv, skiprows=[1], on_bad_lines='skip')
 # # print (df)

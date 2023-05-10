@@ -1,4 +1,4 @@
-#from osgeo import gdal
+from osgeo import gdal
 #from osgeo import ogr
 import os
 #os.getcwd()

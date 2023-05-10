@@ -1,5 +1,8 @@
-from osgeo import gdal
-#from osgeo import ogr
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
+    #from osgeo import ogr
 import os
 #os.getcwd()
 import pandas as pd

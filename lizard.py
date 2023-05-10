@@ -30,28 +30,28 @@ r = requests.get(url, headers = HEADERS)
 # print (r.json())
 
 mn = r.json()["results"]
-print(mn)
+# print(mn)
 
 url2 = "https://demo.lizard.net/api/v4/monitoringnetworks/"+mn[0]['uuid']+"/timeseries/"
-print (url2)
+# print (url2)
 querydata = requests.get(url2,headers=HEADERS,params= {'page_size':'10000'}).json()['results']
 timeseries_list = pd.DataFrame(querydata)
 st.write(timeseries_list[0:4])
-print(querydata)
+# print(querydata)
 
-print(timeseries_list[0:4])# print only the first 5 rows of the dataframe
+# print(timeseries_list[0:4])# print only the first 5 rows of the dataframe
 url3 = timeseries_list['url'][0]
 r = requests.get(url3, headers = HEADERS)
-print(r.json()["code"])
-print(r.json()["location"])
+# print(r.json()["code"])
+# print(r.json()["location"])
 
 url4 = timeseries_list['url'][0]+"events/"
-print(url)
+# print(url)
 time_series_events = pd.DataFrame(requests.get(url=url4,headers=HEADERS,params= {'page_size':'10000'}).json()['results'])
 
-print(time_series_events[0:5])
+# print(time_series_events[0:5])
 st.write(time_series_events[0:5])
-st.write(r.json())
+# st.write(r.json())
 
 # df= pd.read_csv(csv, skiprows=[1], on_bad_lines='skip')
 # # print (df)

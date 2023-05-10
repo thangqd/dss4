@@ -6,9 +6,10 @@
 import os
 #os.getcwd()
 import pandas as pd
-import geopandas as gpd
+# import geopandas as gpd
 import requests
 import streamlit as st
+import geemap
 
 
 # csv = os.path.join(os.path.dirname(__file__), 'dss1.csv')

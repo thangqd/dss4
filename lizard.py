@@ -9,6 +9,9 @@ import pandas as pd
 # import geopandas as gpd
 import requests
 import streamlit as st
+import folium
+from streamlit_folium import st_folium
+
 # import geemap
 
 
@@ -51,6 +54,17 @@ time_series_events = pd.DataFrame(requests.get(url=url4,headers=HEADERS,params= 
 
 # print(time_series_events[0:5])
 st.write(time_series_events[0:5])
+st.latex(" \int f^{-1}(x-x_a)\,dx")
+
+# center on Liberty Bell, add marker
+m = folium.Map(location=[105.68, 9.3], zoom_start=16)
+folium.Marker(
+    [105.68, 9.3], popup="Hellow World", tooltip="Hellow World"
+).add_to(m)
+
+# call to render Folium map in Streamlit
+st_data = st_folium(m, width=725)
+
 # st.write(r.json())
 
 # df= pd.read_csv(csv, skiprows=[1], on_bad_lines='skip')

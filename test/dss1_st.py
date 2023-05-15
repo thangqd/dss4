@@ -12,7 +12,7 @@ from datetime import timedelta
 class dss():    
     def __init__(self):
         st.header("DSS Calculation Module")
-        st.subheader("Copyright 2023 by @watertech.vn")
+        st.subheader("©2023 by watertech.vn")
         
     def gui(self):       
         self.uploaded_file = st.file_uploader("Choose a CSV file")

@@ -28,7 +28,8 @@ class dss():
             status_bar = st.progress(0, text=self.status_lable)
             self.status_bar= status_bar
             self.dss_result = self.calculate_dss(self.uploaded_file,self.fromdate,self.todate, self.dss_status_callback)
-            st.button('Calculate DSS', on_click=self.dss_result)            
+            st.button('Calculate DSS', on_click=self.dss_result)    
+            # st.button('View map', on_click=self.viewmap(self.uploaded_file, self.dss_status_callback))          
       
         st.divider()
         st.caption("Code by Thang Quach")
@@ -51,18 +52,27 @@ class dss():
         if self.dss_calc == "DSS1":
             ouput = dss1(input,fd,td,self.dss_status_callback)
         else:  
-            df = pd.read_csv(input,skiprows=[1]) 
+            ouput = pd.read_csv(input,skiprows=[1]) 
             # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y",errors='coerce').dt.date # convert Date field to Datetime 
             # df["Date"] =   pd.to_datetime(df["Date"]).dt.date # convert Date field to Datetime 
             # st.write(df.dtypes)
             # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]
-            ouput = df
+            # ouput = df
         # st.write(ouput) 
+
         self.download_csv(ouput,self.dss_status_callback)
         self.download_geojson(ouput,self.dss_status_callback)
+
         # return ouput     
 
-           
+             
+
+
+    def viewmap(self, input,dss_status_callback = None):
+        df = pd.read_csv(input,skiprows=[1])
+        st.map(df)
+
+
     def download_csv(self, df,dss_status_callback = None):
         df['Date'] =  df["Date"].astype(str)
         # df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')

@@ -6,14 +6,19 @@ def dss1 (input, fromdate, todate):
     df = pd.read_csv(input,skiprows=[1]) # based on exisitng dss1.csv file               
     df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date # convert Date field to  
     # wqi = df.loc[fromdate:todate]
+    # wqi = df[(df['Date'] >= fromdate) & (df['Date'] < todate)]
     wqi = df
     # added_column = ['WQI_I', 'WQI_II', 'WQI_III', 'WQI_IV', 'WQI_V', 'WQI']
+    
     wqi.insert(6, 'WQI_I', None)   
     wqi['WQI_I'] = wqi.apply(dss1_I, axis=1)
+
     wqi.insert(7, 'WQI_II', None)
     wqi['WQI_II'] = wqi.apply(dss1_II, axis=1)
+
     wqi.insert(8, 'WQI_III', None)
     wqi['WQI_III'] = wqi.apply(dss1_III, axis=1)
+
     wqi = wqi.iloc[:,0:11]
     return wqi
 

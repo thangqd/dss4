@@ -7,7 +7,8 @@ def dss1 (input, fromdate, todate, status_callback):
     # try:         
     #     df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date # convert Date field to
     # except:  
-    df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date   
+    # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date   
+    df["Date"] =  pd.to_datetime(df["Date"]).dt.date   
     # wqi = df.loc[fromdate:todate]
     # wqi = df[(df['Date'] >= fromdate) and (df['Date'] <= todate)]
     wqi = df

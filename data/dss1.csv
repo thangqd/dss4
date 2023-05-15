@@ -1,4 +1,4 @@
-﻿Matram,Kyhieu,longitude,latitude,Z.Elev,Date,pH,Aldrin,BHC,Dieldrin ,DDTs,Heptachlor,Heptachlorepoxide.,As,Cd,Pb,Cr6, Cu, Zn, Hg,DO,BOD5,COD,TOC,N-NH4,N-NO3, N-NO2,P-PO4,Coliform,E.coli.,Salinity,TSS,CL
+﻿Matram,Kyhieu,longitude,latitude,Z.Elev,Date,pH,Aldrin,BHC,Dieldrin,DDTs,Heptachlor,Heptachlorepoxide,As,Cd,Pb,Cr6,Cu,Zn,Hg,DO,BOD5,COD,TOC,N-NH4,N-NO3, N-NO2,P-PO4,Coliform,E.coli.,Salinity,TSS,CL
 ,,degree,degree,m,,,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,µg/L,mg/L,mgO2/l,mgO2/l,mg/L,mg/L,mg/L,mg/L,mg/L,MPN/100mg,MPN/100mg,‰,mg/l,mg/l
 QLPH012016,QL1,105.68,9.30,0.66,29/2/2016,8.88,0.021,0.048,0.047,0.052,0.04,0.013,0.021,0.004,0.009,0.007,0.001,0.074,0.002,7.095,8.28,23.253,17.855,0.163,0.93,0.18,0,1300,92,3.6,4.4,1949
 QLPH012016,QL1,105.68,9.30,0.66,15/3/2016,8.3,0.022,0.021,0.019,0.019,0.041,0.013,0.021,0.006,0.009,0.008,0.001,0.019,0.002,6.913,8.3,20.133,16.598,0.53,0.88,0.2,0,1100,24,4.6,72.52,271.29

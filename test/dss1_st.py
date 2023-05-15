@@ -1,7 +1,7 @@
 import streamlit as st
 # import os
 import pandas as pd
-# import geopandas as gpd
+import geopandas as gpd
 # import json
 # import requests
 # from streamlit_folium import st_folium, folium_static
@@ -52,22 +52,46 @@ class dss():
             ouput = dss1(input,fd,td,self.dss_status_callback)
         else:  
             df = pd.read_csv(input,skiprows=[1]) 
-            df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date # convert Date field to Datetime 
-            df_filter = df[(df['Date'] >= fd) & (df['Date'] <= td)]
-            ouput = df_filter
-        st.write(ouput,) 
-        self.download_dss(ouput,self.dss_status_callback)
+            # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y",errors='coerce').dt.date # convert Date field to Datetime 
+            # df["Date"] =   pd.to_datetime(df["Date"]).dt.date # convert Date field to Datetime 
+            # st.write(df.dtypes)
+            # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]
+            ouput = df
+        # st.write(ouput) 
+        self.download_csv(ouput,self.dss_status_callback)
+        self.download_geojson(ouput,self.dss_status_callback)
         # return ouput     
 
            
-    def download_dss(self, df,dss_status_callback = None):
+    def download_csv(self, df,dss_status_callback = None):
+        df['Date'] =  df["Date"].astype(str)
+        # df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')
+        # df['Date']= df['Date'].dt.strftime('%d/%m/%Y')        
+        st.write(df)
         csv = df.to_csv(index=False).encode('utf-8') 
         st.download_button(
-        "Download " + self.dss_calc,
-        csv,
-        self.dss_calc + ".csv",
-        "text/csv",
+        label= "Download CSV " + self.dss_calc,
+        data = csv,
+        file_name= self.dss_calc + ".csv",
+        mime = "text/csv",
         key='download-csv')
+    
+    def download_geojson(self, df,dss_status_callback = None):
+        df['Date'] =  df["Date"].astype(str)
+        # st.write(df.dtypes) 
+        gdf = gpd.GeoDataFrame(
+            df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
+        )
+
+        # st.write(gdf)
+        geojson = gdf.to_json()  
+        st.download_button(
+            label="Download GeoJSON",
+            file_name= self.dss_calc + ".geojson",
+            mime="application/json",
+            data=geojson
+        )
+
     
     def dss_status_callback(self, percent_complete, lable):        
         self.status_bar.progress(percent_complete, text=lable)              

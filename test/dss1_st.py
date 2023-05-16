@@ -59,6 +59,8 @@ class dss():
             # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]
             # ouput = df
         # st.write(ouput) 
+        if "download_csv" not in st.session_state:
+            st.session_state.download_csv = False
 
         self.download_csv(ouput,self.dss_status_callback)
         self.download_geojson(ouput,self.dss_status_callback)
@@ -66,26 +68,30 @@ class dss():
         # return ouput     
 
              
-
-
     def viewmap(self, input,dss_status_callback = None):
         df = pd.read_csv(input,skiprows=[1])
         st.map(df)
 
 
-    def download_csv(self, df,dss_status_callback = None):
+    def download_csv(self, df,dss_status_callback = None):    
+        st.write(st.session_state.download_csv)    
         df['Date'] =  df["Date"].astype(str)
         # df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')
         # df['Date']= df['Date'].dt.strftime('%d/%m/%Y')        
-        st.write(df)
+        # st.write(df)
         csv = df.to_csv(index=False).encode('utf-8') 
-        st.download_button(
+        click = st.download_button(
         label= "Download CSV " + self.dss_calc,
         data = csv,
         file_name= self.dss_calc + ".csv",
         mime = "text/csv",
         key='download-csv')
-    
+        if click:
+            st.session_state.download_csv = True
+        if st.session_state.download_csv:
+           pass
+
+           
     def download_geojson(self, df,dss_status_callback = None):
         df['Date'] =  df["Date"].astype(str)
         # st.write(df.dtypes) 
@@ -106,6 +112,6 @@ class dss():
     def dss_status_callback(self, percent_complete, lable):        
         self.status_bar.progress(percent_complete, text=lable)              
 
-if __name__ == '__main__':
-    ct = dss()
-    ct.gui()
+# if __name__ == '__main__':
+ct = dss()
+ct.gui()

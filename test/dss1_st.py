@@ -58,7 +58,7 @@ class dss():
             # st.write(df.dtypes)
             # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]
             # ouput = df
-        # st.write(ouput) 
+        st.write(ouput) 
         if "download_csv" not in st.session_state:
             st.session_state.download_csv = False
 
@@ -66,7 +66,6 @@ class dss():
         self.download_geojson(ouput,self.dss_status_callback)
 
         # return ouput     
-
              
     def viewmap(self, input,dss_status_callback = None):
         df = pd.read_csv(input,skiprows=[1])

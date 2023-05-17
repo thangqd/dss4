@@ -323,5 +323,153 @@ def dss1_III(row):
     result = round((As+Cd+Pb+Cr6+Cu+Zn+Hg)/7,2)
     return result
 
+params_IV = pd.DataFrame(
+        {
+            "1": [20,50],
+            "2": [50,50],
+            "3": [75,75], 
+            "4": [88,100],
+            "5": [112,100],
+            "6": [125,75],
+            "7": [150,75],
+            "8": [200,25],
+        }
+)
+params_IV_BOD5 = pd.DataFrame(
+        {
+            "<=4": [4,100],
+            "6": [6,75],
+            "15": [15,50], 
+            "25": [25,25],
+            ">=50": [50,10]
+        }
+)
+
+params_IV_COD = pd.DataFrame(
+        {
+            "<=10": [10,100],
+            "15": [15,75],
+            "30": [30,50], 
+            "50": [50,25],
+            ">=150": [150,10]
+        }
+)
+
+params_IV_TOC = pd.DataFrame(
+        {
+            "<=4": [4,100],
+            "6": [6,75],
+            "15": [15,50], 
+            "25": [25,25],
+            ">=50": [50,10]
+        }
+)
+
+params_IV_N_NH4 = pd.DataFrame(
+        {
+            "<=0.3": [0.3,100],
+            "0.3": [0.3,75],
+            "0.6": [0.6,50], 
+            "0.9": [0.9,25],
+            ">=5": [5,10]
+        }
+)
+
+params_IV_N_NO3 = pd.DataFrame(
+        {
+            "<=2": [2,100],
+            "5": [5,75],
+            "10": [10,50], 
+            "15": [15,25],
+            ">15": [15,10]
+        }
+)
+
+params_IV_N_NO2 = pd.DataFrame(
+        {
+            "<=0.05": [0.05,100],
+            "None": [None,75],
+            "None": [None,50], 
+            "None": [None,25],
+            ">0.05": [0.05,10]
+        }
+)
+
+params_IV_P_PO4 = pd.DataFrame(
+        {
+            "<=0.05": [0.05,100],
+            "None": [None,75],
+            "None": [None,50], 
+            "None": [None,25],
+            ">0.05": [0.05,10]
+        }
+)
+
 def dss1_IV(row):
+    T = 25
+    DO_bh=14.652-0.41022*T+0.0079910*pow(T, 2)-0.000077774*pow(T, 3)
+    # DO_bh_percent = 
+
+params_V_Coliform = pd.DataFrame(
+        {
+            "<=2.5": [2.5,100],
+            "5": [5,75],
+            "7.5": [7.5,50], 
+            "10": [10,25],
+            ">10": [10,10]
+        }
+)
+
+params_V_Ecoli = pd.DataFrame(
+        {
+            "<=20": [20,100],
+            "50": [50,75],
+            "100": [100,50], 
+            "200": [200,25],
+            ">200": [200,10]
+        }
+)
+
+def dss1_V(row):
     result = -1
+    Coliform=Ecoli= 0
+    if row['Coliform'] <= params_III_As.iloc[0][0]: # 2.5
+        Coliform = params_III_As.iloc[1][0] # 100    
+    elif row['Coliform'] >  params_III_As.iloc[0][0] and  row['Coliform'] < params_III_As.iloc[0][1]: # 2.5 < Coliform  < 5
+        As = params_III_As.iloc[1][1]+ (params_III_As.iloc[1][0]-params_III_As.iloc[1][1])/(params_III_As.iloc[0][1]-params_III_As.iloc[0][0])*(params_III_As.iloc[0][1]-row['Coliform'])    
+    
+    elif row['Coliform'] == params_III_As.iloc[0][1]: # 5
+        Coliform = params_III_As.iloc[1][1] # 75   
+    elif row['Coliform'] > params_III_As.iloc[0][1] and row['Coliform'] <  params_III_As.iloc[0][2]: # 0.02 < As  < 0.05
+        As = params_III_As.iloc[1][2]+ (params_III_As.iloc[1][1]-params_III_As.iloc[1][2])/(params_III_As.iloc[0][2]-params_III_As.iloc[0][1])*(params_III_As.iloc[0][2]-row['Coliform'])    
+
+    elif row['Coliform'] == params_III_As.iloc[0][2]: # 7.5
+        Coliform = params_III_As.iloc[1][2] # 50
+    elif row['Coliform'] > params_III_As.iloc[0][2] and row['Coliform'] <  params_III_As.iloc[0][3]: # 0.05 < As  < 0.1
+        As = params_III_As.iloc[1][3]+ (params_III_As.iloc[1][2]-params_III_As.iloc[1][3])/(params_III_As.iloc[0][3]-params_III_As.iloc[0][2])*(params_III_As.iloc[0][3]-row['Coliform'])    
+
+    elif row['Coliform'] == params_III_As.iloc[0][3]: # 10
+        Coliform = params_III_As.iloc[1][3] # 25 
+    elif row['Coliform'] > params_III_As.iloc[0][4]: # >10
+        Coliform = params_III_As.iloc[1][4] # 10
+
+    # Ecoli
+    if row['Ecoli'] <= params_III_As.iloc[0][0]: # 20
+        Ecoli = params_III_As.iloc[1][0] # 100    
+    elif row['Ecoli'] >  params_III_As.iloc[0][0] and  row['Ecoli'] < params_III_As.iloc[0][1]: # 2.5 < Coliform  < 5
+        As = params_III_As.iloc[1][1]+ (params_III_As.iloc[1][0]-params_III_As.iloc[1][1])/(params_III_As.iloc[0][1]-params_III_As.iloc[0][0])*(params_III_As.iloc[0][1]-row['Ecoli'])    
+    
+    elif row['Ecoli'] == params_III_As.iloc[0][1]: # 50
+        Ecoli = params_III_As.iloc[1][1] # 75   
+    elif row['Ecoli'] > params_III_As.iloc[0][1] and row['Ecoli'] <  params_III_As.iloc[0][2]: # 0.02 < As  < 0.05
+        As = params_III_As.iloc[1][2]+ (params_III_As.iloc[1][1]-params_III_As.iloc[1][2])/(params_III_As.iloc[0][2]-params_III_As.iloc[0][1])*(params_III_As.iloc[0][2]-row['Ecoli'])    
+
+    elif row['Ecoli'] == params_III_As.iloc[0][2]: # 100
+        Ecoli = params_III_As.iloc[1][2] # 50
+    elif row['Ecoli'] > params_III_As.iloc[0][2] and row['Ecoli'] <  params_III_As.iloc[0][3]: # 0.05 < As  < 0.1
+        As = params_III_As.iloc[1][3]+ (params_III_As.iloc[1][2]-params_III_As.iloc[1][3])/(params_III_As.iloc[0][3]-params_III_As.iloc[0][2])*(params_III_As.iloc[0][3]-row['Ecoli'])    
+
+    elif row['Ecoli'] == params_III_As.iloc[0][3]: # 200
+        Ecoli = params_III_As.iloc[1][3] # 25 
+    elif row['Ecoli'] > params_III_As.iloc[0][4]: # >200
+        Ecoli = params_III_As.iloc[1][4] # 10

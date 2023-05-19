@@ -323,18 +323,21 @@ def dss1_III(row):
     result = round((As+Cd+Pb+Cr6+Cu+Zn+Hg)/7,2)
     return result
 
-params_IV = pd.DataFrame(
+params_IV_DO = pd.DataFrame(
         {
-            "1": [20,50],
-            "2": [50,50],
-            "3": [75,75], 
-            "4": [88,100],
-            "5": [112,100],
-            "6": [125,75],
-            "7": [150,75],
-            "8": [200,25],
+            "<20": [20,10],
+            "20": [20,25],
+            "50": [50,50],
+            "75": [75,75], 
+            "88": [88,100],
+            "112": [112,100],
+            "125": [125,75],
+            "150": [150,50],
+            "200": [200,25],
+            ">200": [200,10],
         }
 )
+
 params_IV_BOD5 = pd.DataFrame(
         {
             "<=4": [4,100],
@@ -397,19 +400,154 @@ params_IV_N_NO2 = pd.DataFrame(
 
 params_IV_P_PO4 = pd.DataFrame(
         {
-            "<=0.05": [0.05,100],
-            "None": [None,75],
-            "None": [None,50], 
-            "None": [None,25],
-            ">0.05": [0.05,10]
+            "<=0.1": [0.1,100],
+            "0.2": [0.2,75],
+            "0.3": [0.3,50], 
+            "0.5": [0.5,25],
+            ">=4": [4,10]
         }
 )
+
+
 
 def dss1_IV(row):
     T = 25
     DO_bh=14.652-0.41022*T+0.0079910*pow(T, 2)-0.000077774*pow(T, 3)
-    # DO_bh_percent = 
+    DO_percent_bh = (row['DO']/ DO_bh)*100
+    row['DO'] = DO_percent_bh
+    ###########
+    ## DO
+    ###########
+    if row['DO'] < params_IV_DO.iloc[0][0] or row['DO'] > params_IV_DO.iloc[0][9]: # < 20 or > 200
+        DO = params_IV_DO.iloc[1][0] #10
+    elif row['DO'] >= params_IV_DO.iloc[0][1] and row['DO'] < params_IV_DO.iloc[0][2]: # >= 20 & < 50)
+        DO = params_IV_DO.iloc[1][1]+ (params_IV_DO.iloc[1][2] - params_IV_DO.iloc[1][1])/(params_IV_DO.iloc[0][2]-params_IV_DO.iloc[0][1])*(row['DO']-params_IV_DO.iloc[0][1])
+    elif row['DO'] >= params_IV_DO.iloc[0][2] and row['DO'] < params_IV_DO.iloc[0][3]: # >= 50 & <= 75)
+        DO = params_IV_DO.iloc[1][2]+ (params_IV_DO.iloc[1][3] - params_IV_DO.iloc[1][2])/(params_IV_DO.iloc[0][3]-params_IV_DO.iloc[0][2])*(row['DO']-params_IV_DO.iloc[0][2])
+    elif row['DO'] >= params_IV_DO.iloc[0][3] and row['DO'] < params_IV_DO.iloc[0][4]: # >= 75 & <= 88)
+        DO = params_IV_DO.iloc[1][3]+ (params_IV_DO.iloc[1][4] - params_IV_DO.iloc[1][3])/(params_IV_DO.iloc[0][4]-params_IV_DO.iloc[0][3])*(row['DO']-params_IV_DO.iloc[0][3])
 
+
+    elif row['DO'] >= params_IV_DO.iloc[0][4] and row['DO'] <= params_IV_DO.iloc[0][5]: #<= 88 and <=112
+        DO = params_IV_DO.iloc[1][4] #100
+
+    elif row['DO'] > params_IV_DO.iloc[0][5] and row['DO'] <= params_IV_DO.iloc[0][6]: # > 112 and <= 125
+        DO = params_IV_DO.iloc[1][6]+ (params_IV_DO.iloc[1][5] -  params_IV_DO.iloc[1][6])/(params_IV_DO.iloc[0][6]-params_IV_DO.iloc[0][5])*(params_IV_DO.iloc[0][6]-row['DO'])
+    elif row['DO'] > params_IV_DO.iloc[0][6] and row['DO'] <= params_IV_DO.iloc[0][7]: # > 125 and <= 150
+        DO = params_IV_DO.iloc[1][7]+ (params_IV_DO.iloc[1][6] -  params_IV_DO.iloc[1][7])/(params_IV_DO.iloc[0][7]-params_IV_DO.iloc[0][6])*(params_IV_DO.iloc[0][7]-row['DO'])
+    elif row['DO'] > params_IV_DO.iloc[0][7] and row['DO'] <= params_IV_DO.iloc[0][8]: # > 150 and <= 200
+        DO = params_IV_DO.iloc[1][8]+ (params_IV_DO.iloc[1][7] -  params_IV_DO.iloc[1][8])/(params_IV_DO.iloc[0][8]-params_IV_DO.iloc[0][7])*(params_IV_DO.iloc[0][8]-row['DO'])
+  
+
+    ###########
+    ## BOD5
+    ###########
+    if row['BOD5'] <=params_IV_BOD5.iloc[0][0]: # <=4
+        BOD5 = params_IV_BOD5.iloc[1][0] #100
+    elif row['BOD5'] >= params_IV_BOD5.iloc[0][4]: # >= 50
+        BOD5 = params_IV_BOD5.iloc[1][4] # 10
+
+    elif row['BOD5'] > params_IV_BOD5.iloc[0][0] and row['BOD5'] <= params_IV_BOD5.iloc[0][1]: #>4, <=6
+        BOD5 = params_IV_BOD5.iloc[1][1]+ (params_IV_BOD5.iloc[1][0] -  params_IV_BOD5.iloc[1][1])/(params_IV_BOD5.iloc[0][1]-params_IV_BOD5.iloc[0][0])*(params_IV_BOD5.iloc[0][1]-row['BOD5'])
+    elif row['BOD5'] > params_IV_BOD5.iloc[0][1] and row['BOD5'] <= params_IV_BOD5.iloc[0][2]: #>6, <=15
+        BOD5 = params_IV_BOD5.iloc[1][2]+ (params_IV_BOD5.iloc[1][1] -  params_IV_BOD5.iloc[1][2])/(params_IV_BOD5.iloc[0][2]-params_IV_BOD5.iloc[0][1])*(params_IV_BOD5.iloc[0][2]-row['BOD5'])
+    elif row['BOD5'] > params_IV_BOD5.iloc[0][2] and row['BOD5'] <= params_IV_BOD5.iloc[0][3]: #>15, <=25
+        BOD5 = params_IV_BOD5.iloc[1][3]+ (params_IV_BOD5.iloc[1][2] -  params_IV_BOD5.iloc[1][3])/(params_IV_BOD5.iloc[0][3]-params_IV_BOD5.iloc[0][2])*(params_IV_BOD5.iloc[0][3]-row['BOD5'])
+    elif row['BOD5'] > params_IV_BOD5.iloc[0][3] and row['BOD5'] < params_IV_BOD5.iloc[0][4]: #>25, <50
+        BOD5 = params_IV_BOD5.iloc[1][4]+ (params_IV_BOD5.iloc[1][3] -  params_IV_BOD5.iloc[1][4])/(params_IV_BOD5.iloc[0][4]-params_IV_BOD5.iloc[0][3])*(params_IV_BOD5.iloc[0][4]-row['BOD5'])
+
+    ###########
+    ## COD
+    ###########
+    if row['COD'] <=params_IV_COD.iloc[0][0]: # <=10
+        COD = params_IV_COD.iloc[1][0] #100
+    elif row['COD'] >= params_IV_COD.iloc[0][4]: # >= 150
+        COD = params_IV_COD.iloc[1][4] # 10
+
+    elif row['COD'] > params_IV_COD.iloc[0][0] and row['COD'] <= params_IV_COD.iloc[0][1]: #>10, <=15
+        COD = params_IV_COD.iloc[1][1]+ (params_IV_COD.iloc[1][0] -  params_IV_COD.iloc[1][1])/(params_IV_COD.iloc[0][1]-params_IV_COD.iloc[0][0])*(params_IV_COD.iloc[0][1]-row['COD'])
+    elif row['COD'] > params_IV_COD.iloc[0][1] and row['COD'] <= params_IV_COD.iloc[0][2]: #>15, <=30
+        COD = params_IV_COD.iloc[1][2]+ (params_IV_COD.iloc[1][1] -  params_IV_COD.iloc[1][2])/(params_IV_COD.iloc[0][2]-params_IV_COD.iloc[0][1])*(params_IV_COD.iloc[0][2]-row['COD'])
+    elif row['COD'] > params_IV_COD.iloc[0][2] and row['COD'] <= params_IV_COD.iloc[0][3]: #>30, <=50
+        COD = params_IV_COD.iloc[1][3]+ (params_IV_COD.iloc[1][2] -  params_IV_COD.iloc[1][3])/(params_IV_COD.iloc[0][3]-params_IV_COD.iloc[0][2])*(params_IV_COD.iloc[0][3]-row['COD'])
+    elif row['COD'] > params_IV_COD.iloc[0][3] and row['COD'] < params_IV_COD.iloc[0][4]: #>50, <150
+        COD = params_IV_COD.iloc[1][4]+ (params_IV_COD.iloc[1][3] -  params_IV_COD.iloc[1][4])/(params_IV_COD.iloc[0][4]-params_IV_COD.iloc[0][3])*(params_IV_COD.iloc[0][4]-row['COD'])
+
+    ###########
+    ## TOC
+    ###########
+    if row['TOC'] <=params_IV_TOC.iloc[0][0]: # <=4
+        TOC = params_IV_TOC.iloc[1][0] #100
+    elif row['TOC'] >= params_IV_TOC.iloc[0][4]: # >= 50
+        TOC = params_IV_TOC.iloc[1][4] # 10
+
+    elif row['TOC'] > params_IV_TOC.iloc[0][0] and row['TOC'] <= params_IV_TOC.iloc[0][1]: #>4, <=6
+        TOC = params_IV_TOC.iloc[1][1]+ (params_IV_TOC.iloc[1][0] -  params_IV_TOC.iloc[1][1])/(params_IV_TOC.iloc[0][1]-params_IV_TOC.iloc[0][0])*(params_IV_TOC.iloc[0][1]-row['TOC'])
+    elif row['TOC'] > params_IV_TOC.iloc[0][1] and row['TOC'] <= params_IV_TOC.iloc[0][2]: #>6, <=15
+        TOC = params_IV_TOC.iloc[1][2]+ (params_IV_TOC.iloc[1][1] -  params_IV_TOC.iloc[1][2])/(params_IV_TOC.iloc[0][2]-params_IV_TOC.iloc[0][1])*(params_IV_TOC.iloc[0][2]-row['TOC'])
+    elif row['TOC'] > params_IV_TOC.iloc[0][2] and row['TOC'] <= params_IV_TOC.iloc[0][3]: #>15, <=25
+        TOC = params_IV_TOC.iloc[1][3]+ (params_IV_TOC.iloc[1][2] -  params_IV_TOC.iloc[1][3])/(params_IV_TOC.iloc[0][3]-params_IV_TOC.iloc[0][2])*(params_IV_TOC.iloc[0][3]-row['TOC'])
+    elif row['TOC'] > params_IV_TOC.iloc[0][3] and row['TOC'] < params_IV_TOC.iloc[0][4]: #>25, <50
+        TOC = params_IV_TOC.iloc[1][4]+ (params_IV_TOC.iloc[1][3] -  params_IV_TOC.iloc[1][4])/(params_IV_TOC.iloc[0][4]-params_IV_TOC.iloc[0][3])*(params_IV_TOC.iloc[0][4]-row['TOC'])
+
+    ###########
+    ## N_NH4
+    ###########
+    if row['N_NH4'] <=params_IV_N_NH4.iloc[0][0]: # <=0.3
+        N_NH4 = params_IV_N_NH4.iloc[1][0] #100
+    elif row['N_NH4'] >= params_IV_N_NH4.iloc[0][4]: # >= 5
+        N_NH4 = params_IV_N_NH4.iloc[1][4] # 10
+
+    elif row['N_NH4'] > params_IV_N_NH4.iloc[0][0] and row['N_NH4'] <= params_IV_N_NH4.iloc[0][1]: #>0.3, <=0.3
+        N_NH4 = params_IV_N_NH4.iloc[1][1]+ (params_IV_N_NH4.iloc[1][0] -  params_IV_N_NH4.iloc[1][1])/(params_IV_N_NH4.iloc[0][1]-params_IV_N_NH4.iloc[0][0])*(params_IV_N_NH4.iloc[0][1]-row['N_NH4'])
+    elif row['N_NH4'] > params_IV_N_NH4.iloc[0][1] and row['N_NH4'] <= params_IV_N_NH4.iloc[0][2]: #>0.3, <=0.6
+        N_NH4 = params_IV_N_NH4.iloc[1][2]+ (params_IV_N_NH4.iloc[1][1] -  params_IV_N_NH4.iloc[1][2])/(params_IV_N_NH4.iloc[0][2]-params_IV_N_NH4.iloc[0][1])*(params_IV_N_NH4.iloc[0][2]-row['N_NH4'])
+    elif row['N_NH4'] > params_IV_N_NH4.iloc[0][2] and row['N_NH4'] <= params_IV_N_NH4.iloc[0][3]: #>0.6, <=0.9
+        N_NH4 = params_IV_N_NH4.iloc[1][3]+ (params_IV_N_NH4.iloc[1][2] -  params_IV_N_NH4.iloc[1][3])/(params_IV_N_NH4.iloc[0][3]-params_IV_N_NH4.iloc[0][2])*(params_IV_N_NH4.iloc[0][3]-row['N_NH4'])
+    elif row['N_NH4'] > params_IV_N_NH4.iloc[0][3] and row['N_NH4'] < params_IV_N_NH4.iloc[0][4]: #>0.9, <5
+        N_NH4 = params_IV_N_NH4.iloc[1][4]+ (params_IV_N_NH4.iloc[1][3] -  params_IV_N_NH4.iloc[1][4])/(params_IV_N_NH4.iloc[0][4]-params_IV_N_NH4.iloc[0][3])*(params_IV_N_NH4.iloc[0][4]-row['N_NH4'])
+    
+    ###########
+    ## N_NO3
+    ###########
+    if row['N_NO3'] <=params_IV_N_NO3.iloc[0][0]: # <=2
+        N_NO3 = params_IV_N_NO3.iloc[1][0] #100
+    elif row['N_NO3'] > params_IV_N_NO3.iloc[0][4]: # > 15
+        N_NO3 = params_IV_N_NO3.iloc[1][4] # 10
+
+    elif row['N_NO3'] > params_IV_N_NO3.iloc[0][0] and row['N_NO3'] <= params_IV_N_NO3.iloc[0][1]: #>2, <=5
+        N_NO3 = params_IV_N_NO3.iloc[1][1]+ (params_IV_N_NO3.iloc[1][0] -  params_IV_N_NO3.iloc[1][1])/(params_IV_N_NO3.iloc[0][1]-params_IV_N_NO3.iloc[0][0])*(params_IV_N_NO3.iloc[0][1]-row['N_NO3'])
+    elif row['N_NO3'] > params_IV_N_NO3.iloc[0][1] and row['N_NO3'] <= params_IV_N_NO3.iloc[0][2]: #>5, <=10
+        N_NO3 = params_IV_N_NO3.iloc[1][2]+ (params_IV_N_NO3.iloc[1][1] -  params_IV_N_NO3.iloc[1][2])/(params_IV_N_NO3.iloc[0][2]-params_IV_N_NO3.iloc[0][1])*(params_IV_N_NO3.iloc[0][2]-row['N_NO3'])
+    elif row['N_NO3'] > params_IV_N_NO3.iloc[0][2] and row['N_NO3'] <= params_IV_N_NO3.iloc[0][3]: #>10, <=15
+        N_NO3 = params_IV_N_NO3.iloc[1][3]+ (params_IV_N_NO3.iloc[1][2] -  params_IV_N_NO3.iloc[1][3])/(params_IV_N_NO3.iloc[0][3]-params_IV_N_NO3.iloc[0][2])*(params_IV_N_NO3.iloc[0][3]-row['N_NO3'])
+    
+
+    ###########
+    ## N_NO2
+    ###########
+    if row['N_NO2'] <=params_IV_N_NO2.iloc[0][0]: # <=0.05
+        N_NO2 = params_IV_N_NO2.iloc[1][0] #100
+    elif row['N_NO2'] > params_IV_N_NO2.iloc[0][4]: # >= 0.5
+        N_NO2 = params_IV_N_NO2.iloc[1][4] # 10
+
+###########
+    ## P_PO4
+    ###########
+    if row['P_PO4'] <=params_IV_P_PO4.iloc[0][0]: # <=0.1
+        P_PO4 = params_IV_P_PO4.iloc[1][0] #100
+    elif row['P_PO4'] >= params_IV_P_PO4.iloc[0][4]: # >= 4
+        P_PO4 = params_IV_P_PO4.iloc[1][4] # 10
+
+    elif row['P_PO4'] > params_IV_P_PO4.iloc[0][0] and row['P_PO4'] <= params_IV_P_PO4.iloc[0][1]: #>0.1, <=0.2
+        P_PO4 = params_IV_P_PO4.iloc[1][1]+ (params_IV_P_PO4.iloc[1][0] -  params_IV_P_PO4.iloc[1][1])/(params_IV_P_PO4.iloc[0][1]-params_IV_P_PO4.iloc[0][0])*(params_IV_P_PO4.iloc[0][1]-row['P_PO4'])
+    elif row['P_PO4'] > params_IV_P_PO4.iloc[0][1] and row['P_PO4'] <= params_IV_P_PO4.iloc[0][2]: #>0.2, <=0.3
+        P_PO4 = params_IV_P_PO4.iloc[1][2]+ (params_IV_P_PO4.iloc[1][1] -  params_IV_P_PO4.iloc[1][2])/(params_IV_P_PO4.iloc[0][2]-params_IV_P_PO4.iloc[0][1])*(params_IV_P_PO4.iloc[0][2]-row['P_PO4'])
+    elif row['P_PO4'] > params_IV_P_PO4.iloc[0][2] and row['P_PO4'] <= params_IV_P_PO4.iloc[0][3]: #>0.3, <=0.5
+        P_PO4 = params_IV_P_PO4.iloc[1][3]+ (params_IV_P_PO4.iloc[1][2] -  params_IV_P_PO4.iloc[1][3])/(params_IV_P_PO4.iloc[0][3]-params_IV_P_PO4.iloc[0][2])*(params_IV_P_PO4.iloc[0][3]-row['P_PO4'])
+    elif row['P_PO4'] > params_IV_P_PO4.iloc[0][3] and row['P_PO4'] < params_IV_P_PO4.iloc[0][4]: #>0.5, <0.4
+        P_PO4 = params_IV_P_PO4.iloc[1][4]+ (params_IV_P_PO4.iloc[1][3] -  params_IV_P_PO4.iloc[1][4])/(params_IV_P_PO4.iloc[0][4]-params_IV_P_PO4.iloc[0][3])*(params_IV_P_PO4.iloc[0][4]-row['P_PO4'])
+#  To be continue
 params_V_Coliform = pd.DataFrame(
         {
             "<=2.5": [2.5,100],

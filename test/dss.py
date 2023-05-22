@@ -12,9 +12,10 @@ def dss1 (input, fromdate, todate, status_callback):
     # wqi = df.loc[fromdate:todate]
     # wqi = df[(df['Date'] >= fromdate) and (df['Date'] <= todate)]
     wqi = df
+    row_count = len (df)
     # added_column = ['WQI_I', 'WQI_II', 'WQI_III', 'WQI_IV', 'WQI_V', 'WQI']
     i = 0
-    steps =3 
+    steps =5 
     if 'WQI_I' not in df.columns:
         wqi.insert(6, 'WQI_I', None)  
     wqi['WQI_I'] = wqi.apply(dss1_I, axis=1)
@@ -48,6 +49,39 @@ def dss1 (input, fromdate, todate, status_callback):
     else:
         print(label) 
     
+    if 'WQI_IV' not in df.columns:
+        wqi.insert(9, 'WQI_IV', None)  
+    wqi['WQI_IV'] = wqi.apply(dss1_IV, axis=1)
+    i+=1
+    percent = int((i/steps)*100)
+    label = str(i)+ '/'+ str(steps)+ '. Calculate WQI_IV'    
+    if status_callback:
+        status_callback(percent,label)
+    else:
+        print(label) 
+    
+    if 'WQI_V' not in df.columns:
+        wqi.insert(10, 'WQI_V', None)  
+    wqi['WQI_V'] = wqi.apply(dss1_IV, axis=1)
+    i+=1
+    percent = int((i/steps)*100)
+    label = str(i)+ '/'+ str(steps)+ '. Calculate WQI_V'    
+    if status_callback:
+        status_callback(percent,label)
+    else:
+        print(label) 
+    
+    if 'WQI' not in df.columns:
+        wqi.insert(11, 'WQI', None)  
+    
+    wqi['WQI'] = (wqi['WQI_1']/100)*(wqi['WQI_1'])
+    i+=1
+    percent = int((i/steps)*100)
+    label = str(i)+ '/'+ str(steps)+ '. Calculate WQI'    
+    if status_callback:
+        status_callback(percent,label)
+    else:
+        print(label)     
 
     # wqi = wqi.iloc[:,0:11]
     return wqi
@@ -83,12 +117,14 @@ def dss1_I(row):
         result = 100
     elif (row['pH'] >= params_I.iloc[0][2]) &  (row['pH'] <params_I.iloc[0][3]):  # 8.5 <= pH <=9
         result = params_I.iloc[1][3]+ (params_I.iloc[1][2]-params_I.iloc[1][3])/(params_I.iloc[0][3]-params_I.iloc[0][2])*(params_I.iloc[0][3]-row['pH'])  
+    row['WQI_pH'] = result
     return round(result,2)
 
 def dss1_II(row):
     result = -1
     if (row['Aldrin'] <= params_II.iloc[0][0]): # Aldrin <= 0.1
         Aldrin = 100
+        row['WQI_Aldrin'] = Aldrin
     else: Aldrin = 10
     if (row['BHC'] <= params_II.iloc[0][1]): # Aldrin <= 0.02
         BHC = 100
@@ -108,7 +144,7 @@ def dss1_II(row):
     result = round((Aldrin + BHC + Dieldrin + DDTs + Heptachlor + Heptachlorepoxide)/6,2)
     return result
 
-# As,Cd,Pb,Cr6, Cu, Zn
+# As,Cd,Pb,Cr6, Cu, Zn, Hg
 params_III_As = pd.DataFrame(
         {
             "0.01": [0.01,100],
@@ -533,7 +569,7 @@ def dss1_IV(row):
 
 ###########
     ## P_PO4
-    ###########
+###########
     if row['P_PO4'] <=params_IV_P_PO4.iloc[0][0]: # <=0.1
         P_PO4 = params_IV_P_PO4.iloc[1][0] #100
     elif row['P_PO4'] >= params_IV_P_PO4.iloc[0][4]: # >= 4
@@ -547,7 +583,14 @@ def dss1_IV(row):
         P_PO4 = params_IV_P_PO4.iloc[1][3]+ (params_IV_P_PO4.iloc[1][2] -  params_IV_P_PO4.iloc[1][3])/(params_IV_P_PO4.iloc[0][3]-params_IV_P_PO4.iloc[0][2])*(params_IV_P_PO4.iloc[0][3]-row['P_PO4'])
     elif row['P_PO4'] > params_IV_P_PO4.iloc[0][3] and row['P_PO4'] < params_IV_P_PO4.iloc[0][4]: #>0.5, <0.4
         P_PO4 = params_IV_P_PO4.iloc[1][4]+ (params_IV_P_PO4.iloc[1][3] -  params_IV_P_PO4.iloc[1][4])/(params_IV_P_PO4.iloc[0][4]-params_IV_P_PO4.iloc[0][3])*(params_IV_P_PO4.iloc[0][4]-row['P_PO4'])
-#  To be continue
+    
+    result = round((DO + BOD5 + COD + TOC + N_NH4 + N_NO3 + N_NO2 + P_PO4)/8,2)
+    return result
+
+
+###########
+## WQI_5
+###########
 params_V_Coliform = pd.DataFrame(
         {
             "<=2.5": [2.5,100],
@@ -611,3 +654,7 @@ def dss1_V(row):
         Ecoli = params_III_As.iloc[1][3] # 25 
     elif row['Ecoli'] > params_III_As.iloc[0][4]: # >200
         Ecoli = params_III_As.iloc[1][4] # 10
+    result = round((Coliform + Ecoli)/2,2)
+    return result
+
+

@@ -59,6 +59,7 @@ class dss():
             # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]
             # ouput = df
         st.write(ouput) 
+        st.write(ouput.describe())
         if "download_csv" not in st.session_state:
             st.session_state.download_csv = False
 

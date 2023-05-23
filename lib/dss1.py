@@ -2,7 +2,7 @@ import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
 # Calculate DSS1
-def dss1 (input, fromdate, todate, status_callback):
+def dss1_final (input, fromdate, todate, status_callback):
     df = pd.read_csv(input,skiprows=[1]) # based on exisitng dss1.csv file      
     # try:         
     #     df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date # convert Date field to
@@ -73,14 +73,25 @@ def dss1 (input, fromdate, todate, status_callback):
     
     if 'WQI' not in df.columns:
         wqi.insert(11, 'WQI', None)  
+    
+
     if 'WQI_Weight' not in df.columns:
-        wqi.insert(12, 'WQI_Weight', None) 
+        wqi.insert(14, 'WQI_Weight', None) 
     if 'WQI_no_V' not in df.columns:
-        wqi.insert(13, 'WQI_no_V', None)  
+        wqi.insert(15, 'WQI_no_V', None)  
     
     wqi['WQI'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*wqi['WQI_IV'],0)
     wqi['WQI_Weight'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*(pow((wqi['WQI_IV']**2)*wqi['WQI_V'],1/3)),0)
     wqi['WQI_no_V'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*(pow(wqi['WQI_IV']*wqi['WQI_V'],1/2)),0)
+
+    if 'WQI_Desc' not in df.columns:
+        wqi.insert(12, 'WQI_Desc', '') 
+    wqi['WQI_Desc']  = wqi['WQI'].map(dss1_desc)
+
+    if 'WQI_Color' not in df.columns:
+        wqi.insert(13, 'WQI_Color', '') 
+    wqi['WQI_Color']  = wqi['WQI'].map(dss1_color)
+
 
     i+=1
     percent = int((i/steps)*100)
@@ -115,6 +126,45 @@ params_II = pd.DataFrame(
             "Heptachlorepoxide": [0.2]
         }
 )
+
+
+#Assign DSS1 Description
+def dss1_desc(wqi_value):
+    status = ''
+    if wqi_value is not None:
+        if wqi_value < 10:
+            status =  "Ô nhiễm rất nặng"
+        elif wqi_value  >= 10 and wqi_value  <= 25:
+            status =  "Kém"
+        elif wqi_value >= 26 and wqi_value  <= 50:
+            status =  "Xấu"
+        elif wqi_value >= 51 and wqi_value  <= 75:
+            status =  "Trung bình"
+        elif wqi_value >= 75 and wqi_value <= 90:
+            status =  "Tốt"
+        elif wqi_value >= 91 and wqi_value  <= 100:
+            status =  "Rất tốt"
+    return status
+
+def dss1_color(wqi_value):
+    color = ''
+    if wqi_value is not None:
+        if wqi_value < 10:
+            color =  'RGB(126,0,35)'
+        elif wqi_value  >= 10 and wqi_value  <= 25:
+            color =  'RGB(255,0,0)'
+        elif wqi_value >= 26 and wqi_value  <= 50:
+            color =  'RGB(255,126,0)'
+        elif wqi_value >= 51 and wqi_value  <= 75:
+            color =   'RGB(255,255,0)'
+        elif wqi_value >= 75 and wqi_value <= 90:
+            color = 'RGB(0,228,0)'
+        elif wqi_value >= 91 and wqi_value  <= 100:
+            color = 'RGB(51,51,255)'
+    return color
+
+
+
 
 #Calculate DSS1_I
 def dss1_I(row):

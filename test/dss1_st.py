@@ -2,11 +2,15 @@ import streamlit as st
 # import os
 import pandas as pd
 import geopandas as gpd
+import numpy as np
 # import json
 # import requests
 # from streamlit_folium import st_folium, folium_static
 # from pandas.api.types import is_numeric_dtype
-from dss import *
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
+from dss1 import dss1_final
+
 from datetime import timedelta
 
 class dss():    
@@ -50,24 +54,29 @@ class dss():
       
     def calculate_dss(self, input, fd, td, dss_status_callback = None):
         if self.dss_calc == "DSS1":
-            ouput = dss1(input,fd,td,self.dss_status_callback)
+            output = dss1_final(input,fd,td,self.dss_status_callback)
         else:  
-            ouput = pd.read_csv(input,skiprows=[1]) 
+            output = pd.read_csv(input,skiprows=[1]) 
             # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y",errors='coerce').dt.date # convert Date field to Datetime 
             # df["Date"] =   pd.to_datetime(df["Date"]).dt.date # convert Date field to Datetime 
             # st.write(df.dtypes)
-            # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]
-            # ouput = df
-        st.write(ouput) 
-        # st.write(ouput.describe())
+            # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]            # ouput = df
+        
+        st.dataframe(output.style.applymap(self.color,subset=['WQI_Color']))          
+
+
         if "download_csv" not in st.session_state:
             st.session_state.download_csv = False
 
-        self.download_csv(ouput,self.dss_status_callback)
-        self.download_geojson(ouput,self.dss_status_callback)
+        self.download_csv(output,self.dss_status_callback)
+        self.download_geojson(output,self.dss_status_callback)
 
         # return ouput     
-             
+
+    
+    def color(self,val):
+        return f'background-color: {val}'
+    
     def viewmap(self, input,dss_status_callback = None):
         df = pd.read_csv(input,skiprows=[1])
         st.map(df)

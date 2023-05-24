@@ -83,7 +83,7 @@ class dss():
 
 
     def download_csv(self, df,dss_status_callback = None):    
-        st.write(st.session_state.download_csv)    
+        # st.write(st.session_state.download_csv)    
         df['Date'] =  df["Date"].astype(str)
         # df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')
         # df['Date']= df['Date'].dt.strftime('%d/%m/%Y')        

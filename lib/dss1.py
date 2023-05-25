@@ -72,17 +72,8 @@ def dss1_final (input, fromdate, todate, status_callback):
         print(label) 
     
     if 'WQI' not in df.columns:
-        wqi.insert(11, 'WQI', None)  
-    
-
-    if 'WQI_Weight' not in df.columns:
-        wqi.insert(14, 'WQI_Weight', None) 
-    if 'WQI_no_V' not in df.columns:
-        wqi.insert(15, 'WQI_no_V', None)  
-    
+        wqi.insert(11, 'WQI', None)     
     wqi['WQI'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*wqi['WQI_IV'],0)
-    wqi['WQI_Weight'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*(pow((wqi['WQI_IV']**2)*wqi['WQI_V'],1/3)),0)
-    wqi['WQI_no_V'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*(pow(wqi['WQI_IV']*wqi['WQI_V'],1/2)),0)
 
     if 'WQI_Desc' not in df.columns:
         wqi.insert(12, 'WQI_Desc', '') 
@@ -92,6 +83,13 @@ def dss1_final (input, fromdate, todate, status_callback):
         wqi.insert(13, 'WQI_Color', '') 
     wqi['WQI_Color']  = wqi['WQI'].map(dss1_color)
 
+    if 'WQI_Weight' not in df.columns:
+        wqi.insert(14, 'WQI_Weight', None) 
+    wqi['WQI_Weight'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*(pow((wqi['WQI_IV']**2)*wqi['WQI_V'],1/3)),0)
+
+    if 'WQI_no_V' not in df.columns:
+        wqi.insert(15, 'WQI_no_V', None)  
+    wqi['WQI_no_V'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*(pow(wqi['WQI_IV']*wqi['WQI_V'],1/2)),0)
 
     i+=1
     percent = int((i/steps)*100)
@@ -164,28 +162,28 @@ def dss1_color(wqi_value):
     return color
 
 
-
-
 #Calculate DSS1_I
 def dss1_I(row):
+    pH = 1
     if (row['pH'] < params_I.iloc[0][0]) or (row['pH'] >params_I.iloc[0][5]): # pH < 5.5 or pH > 9
-        result = params_I.iloc[1][0] # =10
+        pH = params_I.iloc[1][0] # =10
     
     elif  row['pH'] == params_I.iloc[0][1]: #5.5
-        result = params_I.iloc[1][1] # 50
+        pH = params_I.iloc[1][1] # 50
     elif (row['pH'] > params_I.iloc[0][1]) and  (row['pH'] <params_I.iloc[0][2]): # 5.5 < pH < 6        
-        result = params_I.iloc[1][1]+ (params_I.iloc[1][2] - params_I.iloc[1][1])/(params_I.iloc[0][2]-params_I.iloc[0][1])*(row['pH']-params_I.iloc[0][1])
+        pH = params_I.iloc[1][1]+ (params_I.iloc[1][2] - params_I.iloc[1][1])/(params_I.iloc[0][2]-params_I.iloc[0][1])*(row['pH']-params_I.iloc[0][1])
     
     elif (row['pH'] >= params_I.iloc[0][2]) and (row['pH'] <= params_I.iloc[0][3]): # 6 <= pH <= 8.5
-        result = params_I.iloc[1][2] # 100
+        pH = params_I.iloc[1][2] # 100
 
     elif (row['pH'] > params_I.iloc[0][3]) and  (row['pH'] <params_I.iloc[0][4]):  # 8.5 < pH <9
-        result = params_I.iloc[1][4]+ (params_I.iloc[1][3]-params_I.iloc[1][4])/(params_I.iloc[0][4]-params_I.iloc[0][3])*(params_I.iloc[0][4]-row['pH'])     
+        pH = params_I.iloc[1][4]+ (params_I.iloc[1][3]-params_I.iloc[1][4])/(params_I.iloc[0][4]-params_I.iloc[0][3])*(params_I.iloc[0][4]-row['pH'])     
     elif row['pH'] == params_I.iloc[0][4]: # =9
-        result = params_I.iloc[1][4] # 50
-    return round(result,2)
+        pH = params_I.iloc[1][4] # 50
+    return round(pH,2)
 
 def dss1_II(row):
+    Aldrin = BHC = Dieldrin = DDTs = Heptachlor = Heptachlorepoxide = 1
     if (row['Aldrin'] <= params_II.iloc[0][0]): # Aldrin <= 0.1
         Aldrin = 100
     else: Aldrin = 10
@@ -547,7 +545,6 @@ def dss1_IV(row):
     try:
         T = row['T']
     except: T = 25
-
     DO_bh=14.652-0.41022*T+0.0079910*pow(T, 2)-0.000077774*pow(T, 3)
     DO_percent_bh = (row['DO']/ DO_bh)*100
     row['DO'] = DO_percent_bh
@@ -625,7 +622,6 @@ def dss1_IV(row):
     if row['COD'] <=params_IV_COD.iloc[0][0]: # <=10
         COD = params_IV_COD.iloc[1][0] #100
    
-
     elif row['COD'] > params_IV_COD.iloc[0][0] and row['COD'] < params_IV_COD.iloc[0][1]: #>10, <15
         COD = params_IV_COD.iloc[1][1]+ (params_IV_COD.iloc[1][0] -  params_IV_COD.iloc[1][1])/(params_IV_COD.iloc[0][1]-params_IV_COD.iloc[0][0])*(params_IV_COD.iloc[0][1]-row['COD'])
 

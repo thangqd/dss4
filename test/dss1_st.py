@@ -25,8 +25,8 @@ class dss():
         if (self.uploaded_file):
             # st.write(uploaded_file)     
             self.dss_calc = st.selectbox('Choose DSS to calculate',('DSS1','DSS2','DSS3','DSS4','DSS6'))
-            self.fromdate = st.date_input("From date", pd.to_datetime('today')- timedelta(days=1000))
-            self.todate = st.date_input("To date", pd.to_datetime('today')) 
+            self.fromdate  = st.date_input("From date", pd.to_datetime('today')- timedelta(days=1000))
+            self.todate = st.date_input("To date", pd.to_datetime('today'))                  
             # st.button('Load data', on_click=self.loadata(self.uploaded_file,self.fromdate,self.todate))
             self.status_lable ="Calculation progress"
             status_bar = st.progress(0, text=self.status_lable)
@@ -42,8 +42,8 @@ class dss():
     def loadata(self, input, fd, td):    
         # df_filter = df.loc[fromdate:todate]
         df = pd.read_csv(input,skiprows=[1])
-        df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date # convert Date field to Datetime 
-        df_filter = df[(df['Date'] >= fd) & (df['Date'] <= td)]
+        df["Date"] =  pd.to_datetime(df["Date"],dayfirst=True) # convert Date field to     
+        df_filter = df.loc[(df['Date'] >= fd) & (df['Date']<= td)]
         st.dataframe(df_filter)
         # st.write(df_filter.dtypes)
         st.write(df_filter.describe()) 

@@ -1,17 +1,16 @@
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
+pd.options.mode.copy_on_write = True
 
 # Calculate DSS1
 def dss1_final (input, fromdate, todate, status_callback):
-    df = pd.read_csv(input,skiprows=[1]) # based on exisitng dss1.csv file      
-    # try:         
-    #     df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date # convert Date field to
-    # except:  
-    # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y").dt.date   
-    df["Date"] =  pd.to_datetime(df["Date"]).dt.date   
-    # wqi = df.loc[fromdate:todate]
-    # wqi = df[(df['Date'] >= fromdate) and (df['Date'] <= todate)]
-    wqi = df
+    df = pd.read_csv(input,skiprows=[1]) # depend on exisitng dss1.csv file   
+    df["Date"] =  pd.to_datetime(df["Date"],dayfirst=True)    
+    try:
+        wqi = df.loc[(df['Date'] >= fromdate) & (df['Date'] <= todate)] # OK on Python
+    except: 
+        wqi = df.loc[(df['Date'].dt.date >= fromdate) & (df['Date'].dt.date <= todate)] # OK on Streamlit
+    # wqi = df
     row_count = len (df)
     # added_column = ['WQI_I', 'WQI_II', 'WQI_III', 'WQI_IV', 'WQI_V', 'WQI']
     i = 0

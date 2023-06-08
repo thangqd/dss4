@@ -10,6 +10,8 @@ import numpy as np
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 from dss1 import dss1_final
+from dss2 import dss2_final
+
 
 from datetime import timedelta
 
@@ -55,16 +57,19 @@ class dss():
     def calculate_dss(self, input, fd, td, dss_status_callback = None):
         if self.dss_calc == "DSS1":
             output = dss1_final(input,fd,td,self.dss_status_callback)
-        else:  
-            output = pd.read_csv(input,skiprows=[1]) 
+            try:
+                st.dataframe(output.style.applymap(self.color,subset=['WQI_Color']))          
+            except: st.write(output)
+        elif self.dss_calc == "DSS2":
+            output = dss2_final(input,self.dss_status_callback)
+            st.write(output)
+        # else:  
+        #     output = pd.read_csv(input,skiprows=[1]) 
             # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y",errors='coerce').dt.date # convert Date field to Datetime 
             # df["Date"] =   pd.to_datetime(df["Date"]).dt.date # convert Date field to Datetime 
             # st.write(df.dtypes)
-            # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]            # ouput = df
-        
-        try:
-            st.dataframe(output.style.applymap(self.color,subset=['WQI_Color']))          
-        except: st.write(output)
+            # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]            # ouput = df   
+       
         
         if "download_csv" not in st.session_state:
             st.session_state.download_csv = False

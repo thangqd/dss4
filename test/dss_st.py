@@ -11,6 +11,7 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 from dss1 import dss1_final
 from dss2 import dss2_final
+from streamlit_extras.buy_me_a_coffee import button
 
 
 from datetime import timedelta
@@ -39,6 +40,8 @@ class dss():
       
         st.divider()
         st.caption("Code by Thang Quach")
+        button(username="quachdongthang", floating=False, width=221)
+
 
 
     def loadata(self, input, fd, td):    

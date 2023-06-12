@@ -56,13 +56,21 @@ class dss():
       
     def calculate_dss(self, input, fd, td, dss_status_callback = None):
         if self.dss_calc == "DSS1":
-            output = dss1_final(input,fd,td,self.dss_status_callback)
+            dss1 = dss1_final(input,fd,td,self.dss_status_callback)
             try:
-                st.dataframe(output.style.applymap(self.color,subset=['WQI_Color']))          
-            except: st.write(output)
+                st.dataframe(dss1.style.applymap(self.color,subset=['WQI_Color']))          
+            except: st.write(dss1)
+            self.download_csv(dss1,self.dss_status_callback)
+            self.download_geojson(dss1,self.dss_status_callback)
+            # self.viewmap(dss1,dss_status_callback = None)
         elif self.dss_calc == "DSS2":
-            output = dss2_final(input,self.dss_status_callback)
-            st.write(output)
+            dss2 = dss2_final(input,self.dss_status_callback)
+            try:
+                st.dataframe(dss2.style.applymap(self.color,subset=['W_SCI1_Color','W_SCI2_Color','W_SCI3_Color']))          
+            except: st.write(dss2)
+            self.download_csv(dss2,self.dss_status_callback)
+            self.download_geojson(dss2,self.dss_status_callback)
+            # self.viewmap(dss2,dss_status_callback = None)
         # else:  
         #     output = pd.read_csv(input,skiprows=[1]) 
             # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y",errors='coerce').dt.date # convert Date field to Datetime 
@@ -70,45 +78,35 @@ class dss():
             # st.write(df.dtypes)
             # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]            # ouput = df   
        
-        
-        if "download_csv" not in st.session_state:
-            st.session_state.download_csv = False
-
-        self.download_csv(output,self.dss_status_callback)
-        self.download_geojson(output,self.dss_status_callback)
-
-        # return ouput     
-
+            
+       # return ouput     
     
     def color(self,val):
-        return f'background-color: {val}'
+        return f'background-color: {val}'    
     
     def viewmap(self, input,dss_status_callback = None):
-        df = pd.read_csv(input,skiprows=[1])
+        if self.dss_calc == "DSS1":
+            df = pd.read_csv(input,skiprows=[1])
+        elif self.dss_calc == "DSS2":
+            df = pd.read_csv(input)
         st.map(df)
 
 
-    def download_csv(self, df,dss_status_callback = None):    
-        # st.write(st.session_state.download_csv)    
-        df['Date'] =  df["Date"].astype(str)
-        # df['Date'] = df['Date'].dt.strftime('%m/%d/%Y')
-        # df['Date']= df['Date'].dt.strftime('%d/%m/%Y')        
-        # st.write(df)
-        csv = df.to_csv(index=False).encode('utf-8') 
+    def download_csv(self, df,dss_status_callback = None):  
+        if 'Date' in df.columns:  
+            df['Date'] =  df["Date"].astype(str)
+        csv = df.to_csv(index=False).encode('UTF-8') 
         click = st.download_button(
         label= "Download CSV " + self.dss_calc,
         data = csv,
         file_name= self.dss_calc + ".csv",
         mime = "text/csv",
-        key='download-csv')
-        if click:
-            st.session_state.download_csv = True
-        if st.session_state.download_csv:
-           pass
+        key='download-csv')        
 
            
     def download_geojson(self, df,dss_status_callback = None):
-        df['Date'] =  df["Date"].astype(str)
+        if 'Date' in df.columns:  
+            df['Date'] =  df["Date"].astype(str)
         # st.write(df.dtypes) 
         gdf = gpd.GeoDataFrame(
             df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
@@ -122,8 +120,9 @@ class dss():
             mime="application/json",
             data=geojson
         )
-
     
+           
+   
     def dss_status_callback(self, percent_complete, lable):        
         self.status_bar.progress(percent_complete, text=lable)              
 

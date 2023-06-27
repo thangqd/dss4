@@ -56,7 +56,7 @@ class dss():
         # button(username="quachdongthang", floating=False, width=221)
 
 
-
+    
     def loadata(self, input, fd, td):    
         # df_filter = df.loc[fromdate:todate]
         df = pd.read_csv(input,skiprows=[1])
@@ -69,7 +69,8 @@ class dss():
         result = df_filter.select_dtypes(include='number')
         st.line_chart(result)
         return df_filter
-      
+    
+    @st.cache_data 
     def calculate_dss(self, input, fd, td, dss_status_callback = None):
         if self.dss_calc == "DSS1":
             dss1 = dss1_final(input,fd,td,self.dss_status_callback)

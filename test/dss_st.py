@@ -95,61 +95,62 @@ class dss():
     
     def viewmap_dss1(self, df,dss_status_callback = None):        
         # st.map(df)
-        selected_date = st.date_input("Select a specific date to wiew map", pd.to_datetime(max(df['Date'])))     
-        selected_date = pd.to_datetime(selected_date)
-        df_filter = df.loc[(df['Date'] == selected_date)]    
-        st.write(selected_date)
-        if not df_filter.empty:
-            st.write(df_filter)
-            m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
-            m.add_points_from_xy(
-                df_filter,
-                x="longitude",
-                y="latitude",
-                # color_column='WQI_Color',
-                # icon_names=['gear', 'map', 'leaf', 'globe'],
-                spin=True,
-                # add_legend=True,
-            )
+        if not df.empty:
+            selected_date = st.date_input("Select a specific date to wiew map", pd.to_datetime(max(df['Date'])))     
+            selected_date = pd.to_datetime(selected_date)
+            df_filter = df.loc[(df['Date'] == selected_date)]    
+            st.write(selected_date)
+            if not df_filter.empty:
+                st.write(df_filter)
+                m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+                m.add_points_from_xy(
+                    df_filter,
+                    x="longitude",
+                    y="latitude",
+                    # color_column='WQI_Color',
+                    # icon_names=['gear', 'map', 'leaf', 'globe'],
+                    spin=True,
+                    # add_legend=True,
+                )
 
-            m.to_streamlit(height=700)
+                m.to_streamlit(height=700)
     
     def viewmap_dss2(self, df,dss_status_callback = None):        
         st.map(df)
         
     def download_csv(self, df,dss_status_callback = None):  
-        if 'Date' in df.columns:  
-            df['Date'] =  df["Date"].astype(str)
-        # csv = df.to_csv(index=False).encode('UTF-8') 
-        csv = df.to_csv(encoding ='utf-8')        
-        click = st.download_button(
-        label= "Download CSV " + self.dss_calc,
-        data = csv,
-        file_name= self.dss_calc + ".csv",
-        mime = "text/csv",
-        key='download-csv')        
+        if not df.empty:
+            if 'Date' in df.columns:  
+                df['Date'] =  df["Date"].astype(str)
+            # csv = df.to_csv(index=False).encode('UTF-8') 
+            csv = df.to_csv(encoding ='utf-8')        
+            click = st.download_button(
+            label= "Download CSV " + self.dss_calc,
+            data = csv,
+            file_name= self.dss_calc + ".csv",
+            mime = "text/csv",
+            key='download-csv')        
 
            
     def download_geojson(self, df,dss_status_callback = None):
-        if 'Date' in df.columns:  
-            df['Date'] =  df["Date"].astype(str)
-        # st.write(df.dtypes) 
-        gdf = gpd.GeoDataFrame(
-            df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
-        )
+        if not df.empty:
+            if 'Date' in df.columns:  
+                df['Date'] =  df["Date"].astype(str)
+            # st.write(df.dtypes) 
+            gdf = gpd.GeoDataFrame(
+                df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
+            )
 
-        # st.write(gdf)
-        geojson = gdf.to_json()  
-        st.download_button(
-            label="Download GeoJSON",
-            file_name= self.dss_calc + ".geojson",
-            mime="application/json",
-            data=geojson
-        ) 
-    
-     
-           
-   
+            # st.write(gdf)
+            geojson = gdf.to_json()  
+            st.download_button(
+                label="Download GeoJSON",
+                file_name= self.dss_calc + ".geojson",
+                mime="application/json",
+                data=geojson
+            ) 
+       
+             
     def dss_status_callback(self, percent_complete, lable):        
         self.status_bar.progress(percent_complete, text=lable)              
 

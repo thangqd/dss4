@@ -70,7 +70,6 @@ class dss():
         st.line_chart(result)
         return df_filter
     
-    @st.cache_data 
     def calculate_dss(self, input, fd, td, dss_status_callback = None):
         if self.dss_calc == "DSS1":
             dss1 = dss1_final(input,fd,td,self.dss_status_callback)
@@ -97,10 +96,11 @@ class dss():
     def viewmap_dss1(self, df,dss_status_callback = None):        
         # st.map(df)
         if not df.empty:
-            selected_date = st.date_input("Select a specific date to wiew map", pd.to_datetime(max(df['Date'])))     
+            fd  = st.date_input("From date", pd.to_datetime(min(df['Date'])))
+            td = st.date_input("To date", pd.to_datetime(max(df['Date']))  ) 
             # selected_date = pd.to_datetime(selected_date)
             df["Date"] = pd.to_datetime(df["Date"]).dt.date  
-            df_filter = df.loc[(df['Date'] == selected_date)]    
+            df_filter = df.loc[(df['Date'] >= fd) & (df['Date']<= td)]
             # st.write(selected_date)
             if not df_filter.empty:
                 st.write(df_filter)

@@ -118,7 +118,16 @@ class dss():
                 m.to_streamlit(height=700)
     
     def viewmap_dss2(self, df,dss_status_callback = None):        
-        st.map(df)
+        # st.map(df)
+          if not df.empty:
+            m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+            m.add_points_from_xy(
+                df,
+                x="longitude",
+                y="latitude",
+                spin=True,
+            )
+            m.to_streamlit(height=700)
         
     def download_csv(self, df,dss_status_callback = None):  
         if not df.empty:

@@ -42,7 +42,8 @@ class dss():
             # st.write(uploaded_file)     
             self.dss_calc = st.selectbox('Choose DSS to calculate',('DSS1','DSS2','DSS3','DSS4','DSS6'))
             self.fromdate  = st.date_input("From date", pd.to_datetime('today')- timedelta(days=1000))
-            self.todate = st.date_input("To date", pd.to_datetime('today'))                  
+            self.todate = st.date_input("To date", pd.to_datetime('today'))         
+                     
             # st.button('Load data', on_click=self.loadata(self.uploaded_file,self.fromdate,self.todate))
             self.status_lable ="Calculation progress"
             status_bar = st.progress(0, text=self.status_lable)

@@ -17,7 +17,6 @@ import leafmap.foliumap as leafmap
 
 
 from datetime import timedelta
-
 st.set_page_config(
             page_title="DSS Calculation Module",
             page_icon=":aquarius:",

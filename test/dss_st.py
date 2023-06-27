@@ -11,6 +11,8 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 from dss1 import dss1_final
 from dss2 import dss2_final
+import leafmap.foliumap as leafmap
+
 # from streamlit_extras.buy_me_a_coffee import button
 
 
@@ -77,7 +79,7 @@ class dss():
             except: st.write(dss1)
             self.download_csv(dss1,self.dss_status_callback)
             self.download_geojson(dss1,self.dss_status_callback)
-            # self.viewmap(dss1,dss_status_callback = None)
+            self.viewmap_dss1(dss1,dss_status_callback = None)
         elif self.dss_calc == "DSS2":
             dss2 = dss2_final(input,self.dss_status_callback)
             try:
@@ -85,32 +87,35 @@ class dss():
             except: st.write(dss2)
             self.download_csv(dss2,self.dss_status_callback)
             self.download_geojson(dss2,self.dss_status_callback)
-            # self.viewmap(dss2,dss_status_callback = None)
-        # else:  
-        #     output = pd.read_csv(input,skiprows=[1]) 
-            # df["Date"] =  pd.to_datetime(df["Date"], format="%d/%m/%Y",errors='coerce').dt.date # convert Date field to Datetime 
-            # df["Date"] =   pd.to_datetime(df["Date"]).dt.date # convert Date field to Datetime 
-            # st.write(df.dtypes)
-            # df_filter = df[(df['Date'] >= fd) and (df['Date'] <= td)]            # ouput = df   
-       
+            self.viewmap_dss2(dss2,dss_status_callback = None)          
             
-       # return ouput     
     
     def color(self,val):
         return f'background-color: {val}'    
     
-    def viewmap(self, input,dss_status_callback = None):
-        if self.dss_calc == "DSS1":
-            df = pd.read_csv(input,skiprows=[1])
-        elif self.dss_calc == "DSS2":
-            df = pd.read_csv(input)
+    def viewmap_dss1(self, df,dss_status_callback = None):        
+        # st.map(df)
+        m = leafmap.Map(center=[10.045180, 105.78841], zoom=8)
+        m.add_points_from_xy(
+            df,
+            x="longitude",
+            y="latitude",
+            color_column='WQI_Color',
+            icon_names=['gear', 'map', 'leaf', 'globe'],
+            spin=True,
+            add_legend=True,
+        )
+
+        m.to_streamlit(height=700)
+    
+    def viewmap_dss2(self, df,dss_status_callback = None):        
         st.map(df)
-
-
+        
     def download_csv(self, df,dss_status_callback = None):  
         if 'Date' in df.columns:  
             df['Date'] =  df["Date"].astype(str)
-        csv = df.to_csv(index=False).encode('UTF-8') 
+        # csv = df.to_csv(index=False).encode('UTF-8') 
+        csv = df.to_csv(encoding ='utf-8')        
         click = st.download_button(
         label= "Download CSV " + self.dss_calc,
         data = csv,
@@ -134,8 +139,9 @@ class dss():
             file_name= self.dss_calc + ".geojson",
             mime="application/json",
             data=geojson
-        )
+        ) 
     
+     
            
    
     def dss_status_callback(self, percent_complete, lable):        

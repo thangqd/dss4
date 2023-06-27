@@ -39,7 +39,7 @@ def dss2_color(wsci_value):
 
 # Calculate dss2
 def dss2_final (input, status_callback):
-    wsci = pd.read_csv(input) # depend on exisitng dss2.csv file 
+    wsci = pd.read_csv(input,encoding = "UTF-8") # depend on exisitng dss2.csv file 
     # locale.setlocale(locale.LC_NUMERIC, '') 
 
     wsci[['QSH', 'QCN', 'QTM-DV','Qi', 'KS','QSP', 'QT','fT','QAN','fAN','QAQ','fAQ','QRE2',\

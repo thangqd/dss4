@@ -96,9 +96,10 @@ class dss():
     def viewmap_dss1(self, df,dss_status_callback = None):        
         # st.map(df)
         selected_date = st.date_input("Select a specific date to wiew map", pd.to_datetime(max(df['Date'])))     
-        df_filter = df.loc[(df['Date'].dt.date == selected_date)]    
+        selected_date = pd.to_datetime(selected_date)
+        df_filter = df.loc[(df['Date'] == selected_date)]    
         st.write(selected_date)
-        if df_filter is not None:
+        if not df_filter.empty:
             st.write(df_filter)
             m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
             m.add_points_from_xy(

@@ -97,7 +97,7 @@ class dss():
         # st.map(df)
         selected_date = st.date_input("Select a specific date to wiew map", pd.to_datetime(max(df['Date'])))     
         selected_date = pd.to_datetime(selected_date)
-        df_filter = df.loc[df['Date'].date() == selected_date]    
+        df_filter = df.loc[df['Date'] == selected_date]    
         st.write(selected_date)
         if df_filter is not None:
             st.write(df_filter)

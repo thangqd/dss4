@@ -5,7 +5,7 @@ pd.options.mode.copy_on_write = True
 # Calculate DSS1
 def dss1_final (input, fromdate, todate, status_callback):
     df = pd.read_csv(input,skiprows=[1],encoding = "UTF-8") # depend on exisitng dss1.csv file   
-    df["Date"] =  pd.to_datetime(df["Date"],dayfirst=True)    
+    df["Date"] =  pd.to_datetime(df["Date"],dayfirst=True).dt.date    
     try:
         wqi = df.loc[(df['Date'] >= fromdate) & (df['Date'] <= todate)] # OK on Python
     except: 

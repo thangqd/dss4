@@ -74,6 +74,7 @@ class dss():
     def calculate_dss(self, input, fd, td, dss_status_callback = None):
         if self.dss_calc == "DSS1":
             dss1 = dss1_final(input,fd,td,self.dss_status_callback)
+            dss1["Date"] = pd.to_datetime(dss1["Date"]).dt.date
             try:
                 st.dataframe(dss1.style.applymap(self.color,subset=['WQI_Color']))          
             except: st.write(dss1)

@@ -95,20 +95,21 @@ class dss():
     
     def viewmap_dss1(self, df,dss_status_callback = None):        
         # st.map(df)
-        self.currentdate = st.date_input("Select a specific data to wiew map", pd.to_datetime('today'))        
-        df = df.loc[(df['Date'] == self.currentdate)]
-        m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
-        m.add_points_from_xy(
-            df,
-            x="longitude",
-            y="latitude",
-            # color_column='WQI_Color',
-            # icon_names=['gear', 'map', 'leaf', 'globe'],
-            spin=True,
-            # add_legend=True,
-        )
+        selected_date = st.date_input("Select a specific data to wiew map", pd.to_datetime(max(df['Date'])))        
+        df = df.loc[(df['Date'] == selected_date)]
+        if df is not None:
+            m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+            m.add_points_from_xy(
+                df,
+                x="longitude",
+                y="latitude",
+                # color_column='WQI_Color',
+                # icon_names=['gear', 'map', 'leaf', 'globe'],
+                spin=True,
+                # add_legend=True,
+            )
 
-        m.to_streamlit(height=700)
+            m.to_streamlit(height=700)
     
     def viewmap_dss2(self, df,dss_status_callback = None):        
         st.map(df)

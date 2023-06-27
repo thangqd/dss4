@@ -97,6 +97,7 @@ class dss():
         # st.map(df)
         selected_date = st.date_input("Select a specific date to wiew map", pd.to_datetime(max(df['Date'])))        
         df_filter = df.loc[df['Date'] == selected_date]    
+        st.write(selected_date)
         if df_filter is not None:
             st.write(df_filter)
             m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')

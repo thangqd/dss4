@@ -101,7 +101,7 @@ class dss():
             # selected_date = pd.to_datetime(selected_date)
             df["Date"] = pd.to_datetime(df["Date"]).dt.date  
             df_filter = df.loc[(df['Date'] == selected_date)]    
-            st.write(selected_date)
+            # st.write(selected_date)
             if not df_filter.empty:
                 st.write(df_filter)
                 m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')

@@ -100,7 +100,7 @@ class dss():
             df,
             x="longitude",
             y="latitude",
-            color_column='WQI_Color',
+            # color_column='WQI_Color',
             # icon_names=['gear', 'map', 'leaf', 'globe'],
             spin=True,
             # add_legend=True,

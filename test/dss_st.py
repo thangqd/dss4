@@ -96,6 +96,7 @@ class dss():
     def viewmap_dss1(self, df,dss_status_callback = None):        
         # st.map(df)
         if not df.empty:
+            st.write('Select a date range to view map')
             fd  = st.date_input("From date", pd.to_datetime(min(df['Date'])))
             td = st.date_input("To date", pd.to_datetime(max(df['Date']))  ) 
             # selected_date = pd.to_datetime(selected_date)

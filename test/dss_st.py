@@ -5,7 +5,7 @@ import geopandas as gpd
 import numpy as np
 # import json
 # import requests
-# from streamlit_folium import st_folium, folium_static
+from streamlit_folium import st_folium, folium_static
 # from pandas.api.types import is_numeric_dtype
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
@@ -13,6 +13,8 @@ from dss1 import dss1_final
 from dss2 import dss2_final
 from dss3 import dss3_final
 import leafmap.foliumap as leafmap
+import folium
+from folium.plugins import MarkerCluster
 
 # from streamlit_extras.buy_me_a_coffee import button
 
@@ -148,17 +150,30 @@ class dss():
     
     def viewmap_dss3(self, df,dss_status_callback = None):        
         # st.map(df)
-        try:
-            if not df.empty:
-                m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
-                m.add_points_from_xy(
-                    df,
-                    x="longitude",
-                    y="latitude",
-                    spin=True,
-                )
-                m.to_streamlit(height=700)
-        except: pass       
+        # try:
+        if not df.empty:
+            # m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+            # m = folium.Map(tiles="stamenterrain", location = [10.045180, 105.78841], zoom_start =8)
+            # m.add_points_from_xy(
+            #     df,
+            #     x="longitude",
+            #     y="latitude",
+            #     spin=True,
+            # )
+            # m.to_streamlit(height=700)
+            m = folium.Map(tiles="stamenterrain", location = [10.045180, 105.78841], zoom_start =8)
+
+            # locations = list(zip(df.latitude, df.longitude))
+            # #print(locations)
+            # cluster = MarkerCluster(locations=locations)
+            # m.add_child(cluster)
+
+            for lat,lon,ID,Risk in zip(df.latitude, df.longitude, df.ID, df.Risk):
+                cluster = folium.Marker(location=[lat,lon], tooltip = Risk, popup = ID)
+            m.add_child(cluster)
+
+            folium_static(m, width = 510, height = 450)
+        # except: pass       
   
 
     def download_csv(self, df,dss_status_callback = None):  

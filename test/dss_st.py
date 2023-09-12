@@ -186,7 +186,7 @@ class dss():
                 )
             except:
                 gdf = gpd.GeoDataFrame(
-                    df, geometry=gpd.points_from_xy(df.E, df.N)
+                    df, geometry=gpd.points_from_xy(df.Longitude, df.Latitude)
                 )
 
             # st.write(gdf)

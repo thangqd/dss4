@@ -153,8 +153,8 @@ class dss():
                 m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
                 m.add_points_from_xy(
                     df,
-                    x="E",
-                    y="N",
+                    x="longitude",
+                    y="latitude",
                     spin=True,
                 )
                 m.to_streamlit(height=700)

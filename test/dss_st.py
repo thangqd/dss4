@@ -11,6 +11,7 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 from dss1 import dss1_final
 from dss2 import dss2_final
+from dss3 import dss3_final
 import leafmap.foliumap as leafmap
 
 # from streamlit_extras.buy_me_a_coffee import button
@@ -81,6 +82,7 @@ class dss():
             self.download_csv(dss1,self.dss_status_callback)
             self.download_geojson(dss1,self.dss_status_callback)
             self.viewmap_dss1(dss1,dss_status_callback = None)
+
         elif self.dss_calc == "DSS2":
             dss2 = dss2_final(input,self.dss_status_callback)
             try:
@@ -89,48 +91,76 @@ class dss():
             self.download_csv(dss2,self.dss_status_callback)
             self.download_geojson(dss2,self.dss_status_callback)
             self.viewmap_dss2(dss2,dss_status_callback = None)          
-            
+        
+        elif self.dss_calc == "DSS3":
+            dss3 = dss3_final(input,self.dss_status_callback)
+            try:
+                st.dataframe(dss3.style.applymap(self.color,subset=['Risk_Color']))          
+            except: st.write(dss3)
+            self.download_csv(dss3,self.dss_status_callback)
+            self.download_geojson(dss3,self.dss_status_callback)
+            self.viewmap_dss3(dss3,dss_status_callback = None)          
+
     
     def color(self,val):
         return f'background-color: {val}'    
     
     def viewmap_dss1(self, df,dss_status_callback = None):        
         # st.map(df)
-        if not df.empty:
-            st.write('Select a date range to view map')
-            fd  = st.date_input("From date", pd.to_datetime(min(df['Date'])))
-            td = st.date_input("To date", pd.to_datetime(max(df['Date']))  ) 
-            # selected_date = pd.to_datetime(selected_date)
-            df["Date"] = pd.to_datetime(df["Date"]).dt.date  
-            df_filter = df.loc[(df['Date'] >= fd) & (df['Date']<= td)]
-            # st.write(selected_date)
-            if not df_filter.empty:
-                st.write(df_filter)
-                m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
-                m.add_points_from_xy(
-                    df_filter,
-                    x="longitude",
-                    y="latitude",
-                    # color_column='WQI_Color',
-                    # icon_names=['gear', 'map', 'leaf', 'globe'],
-                    spin=True,
-                    # add_legend=True,
-                )
+        try:
+            if not df.empty:
+                st.write('Select a date range to view map')
+                fd  = st.date_input("From date", pd.to_datetime(min(df['Date'])))
+                td = st.date_input("To date", pd.to_datetime(max(df['Date']))  ) 
+                # selected_date = pd.to_datetime(selected_date)
+                df["Date"] = pd.to_datetime(df["Date"]).dt.date  
+                df_filter = df.loc[(df['Date'] >= fd) & (df['Date']<= td)]
+                # st.write(selected_date)
+                if not df_filter.empty:
+                    st.write(df_filter)
+                    m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+                    m.add_points_from_xy(
+                        df_filter,
+                        x="longitude",
+                        y="latitude",
+                        # color_column='WQI_Color',
+                        # icon_names=['gear', 'map', 'leaf', 'globe'],
+                        spin=True,
+                        # add_legend=True,
+                    )
 
-                m.to_streamlit(height=700)
+                    m.to_streamlit(height=700)
+        except: pass
     
     def viewmap_dss2(self, df,dss_status_callback = None):        
         # st.map(df)
-          if not df.empty:
-            m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
-            m.add_points_from_xy(
-                df,
-                x="longitude",
-                y="latitude",
-                spin=True,
-            )
-            m.to_streamlit(height=700)
-        
+        try:
+            if not df.empty:
+                m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+                m.add_points_from_xy(
+                    df,
+                    x="longitude",
+                    y="latitude",
+                    spin=True,
+                )
+                m.to_streamlit(height=700)
+        except: pass
+    
+    def viewmap_dss3(self, df,dss_status_callback = None):        
+        # st.map(df)
+        try:
+            if not df.empty:
+                m = leafmap.Map(center=[10.045180, 105.78841], zoom=8, tiles = 'Stamen Toner')
+                m.add_points_from_xy(
+                    df,
+                    x="E",
+                    y="N",
+                    spin=True,
+                )
+                m.to_streamlit(height=700)
+        except: pass       
+  
+
     def download_csv(self, df,dss_status_callback = None):  
         if not df.empty:
             if 'Date' in df.columns:  
@@ -150,9 +180,14 @@ class dss():
             if 'Date' in df.columns:  
                 df['Date'] =  df["Date"].astype(str)
             # st.write(df.dtypes) 
-            gdf = gpd.GeoDataFrame(
-                df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
-            )
+            try: 
+                gdf = gpd.GeoDataFrame(
+                    df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
+                )
+            except:
+                gdf = gpd.GeoDataFrame(
+                    df, geometry=gpd.points_from_xy(df.E, df.N)
+                )
 
             # st.write(gdf)
             geojson = gdf.to_json()  

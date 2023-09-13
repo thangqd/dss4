@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit_ext as ste
 # import os
 import pandas as pd
 import geopandas as gpd
@@ -347,12 +348,11 @@ class dss():
                 df['Date'] =  df["Date"].astype(str)
             # csv = df.to_csv(index=False).encode('UTF-8') 
             csv = df.to_csv(encoding ='utf-8')        
-            click = st.download_button(
+            click = ste.download_button(
             label= "Download CSV " + self.dss_calc,
             data = csv,
             file_name= self.dss_calc + ".csv",
-            mime = "text/csv",
-            key='download-csv')        
+            mime = "text/csv")        
 
         
     def download_geojson(self, df,dss_status_callback = None):
@@ -371,7 +371,7 @@ class dss():
 
             # st.write(gdf)
             geojson = gdf.to_json()  
-            st.download_button(
+            ste.download_button(
                 label="Download GeoJSON",
                 file_name= self.dss_calc + ".geojson",
                 mime="application/json",

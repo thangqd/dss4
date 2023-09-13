@@ -74,9 +74,9 @@ def dss1_final (input, fromdate, todate, status_callback):
         wqi.insert(11, 'WQI', None)     
     wqi['WQI'] = round((wqi['WQI_I']/100)*(wqi['WQI_II']/100)*(wqi['WQI_III']/100)*wqi['WQI_IV'],0)
 
-    if 'WQI_Desc' not in df.columns:
-        wqi.insert(12, 'WQI_Desc', '') 
-    wqi['WQI_Desc']  = wqi['WQI'].map(dss1_desc)
+    if 'WQI_Level' not in df.columns:
+        wqi.insert(12, 'WQI_Level', '') 
+    wqi['WQI_Level']  = wqi['WQI'].map(dss1_level)
 
     if 'WQI_Color' not in df.columns:
         wqi.insert(13, 'WQI_Color', '') 
@@ -126,7 +126,7 @@ params_II = pd.DataFrame(
 
 
 #Assign DSS1 Description
-def dss1_desc(wqi_value):
+def dss1_level(wqi_value):
     status = ''
     if wqi_value is not None:
         if wqi_value < 10:

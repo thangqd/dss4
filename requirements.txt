@@ -3,3 +3,4 @@ pandas>=2.0.0
 geopandas>=0.12.2
 streamlit_extras>=0.2.7
 leafmap[lidar]
+webcolors

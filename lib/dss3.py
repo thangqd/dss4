@@ -334,7 +334,7 @@ def dss3_Risk(row):
 
 # Calculate dss3
 def dss3_final (input, status_callback):
-    dss3 = pd.read_csv(input,encoding = "UTF-8") # depend on exisitng dss3.csv file 
+    dss3 = pd.read_csv(input,encoding = 'utf-8') # depend on exisitng dss3.csv file 
     # locale.setlocale(locale.LC_NUMERIC, '') 
     # vulnerability = pd.read_csv(vulnerability,encoding = "UTF-8")
     dss3[['P','Qyc','Qc','WQI','Wh1','HH','Wh2','XNM','Wh3','LL','Wh4','SL','Wh5','Wv1','PD','Wv2','WSCI','Wv3','DTR','Wv4','MDK','Wv5']].apply(pd.to_numeric)

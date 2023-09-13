@@ -134,7 +134,7 @@ class dss():
             self.download_geojson(dss2,self.dss_status_callback)
 
         if dss3 is not None:
-            self.viewmap_dss3(dss2,self.dss_status_callback)
+            self.viewmap_dss3(dss3,self.dss_status_callback)
             self.download_csv(dss3,self.dss_status_callback)
             self.download_geojson(dss3,self.dss_status_callback)
 
@@ -227,7 +227,7 @@ class dss():
                                     max_width=200)   
                 folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
             m.add_child(cluster)            
-            folium_static(m, width = 550)
+            folium_static(m, width = 700)
 
     def viewmap_dss2(self, df,dss_status_callback = None):        
         # st.map(df)
@@ -280,17 +280,17 @@ class dss():
                                             #   "Risk Level: {}".format(Risk_Level))
                 iframe = folium.IFrame(popContent)
                 popup = folium.Popup(iframe,
-                                    min_width=150,
-                                    max_width=150)   
+                                    min_width=200,
+                                    max_width=200)   
                 folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
             m.add_child(cluster)            
-            folium_static(m, width = 550)
+            folium_static(m, width = 700)
 
 
     def viewmap_dss3(self, df,dss_status_callback = None):        
         # st.map(df)
         # try:
-        def get_color_name(rgb):
+        def get_color_name_dss3(rgb):
             if rgb == 'RGB(255,0,0)':
                 color_name = 'red'
             elif rgb == 'RGB(255,126,0)' :
@@ -326,7 +326,7 @@ class dss():
             # cluster = MarkerCluster(locations= locations, popups=popups)
             cluster = MarkerCluster()
             for lat, long, ID, Risk, Risk_Level, Risk_Color in zip(df.latitude, df.longitude, df.ID, df.Risk, df.Risk_Level, df.Risk_Color):
-                color = get_color_name(Risk_Color)
+                color = get_color_name_dss3(Risk_Color)
                 icon=folium.Icon(color=color, icon='ok-circle')
                 # popup = 'ID: {}, Risk Value: {:2.0f}, Risk Level: {}'.format(ID, Risk, Risk_Level)
                 popContent = ("ID: " + str(ID) + '<br>' +\
@@ -339,7 +339,7 @@ class dss():
                                     max_width=150)   
                 folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
             m.add_child(cluster)            
-            folium_static(m, width = 550)
+            folium_static(m, width = 700)
         # except: pass       
   
      

@@ -125,7 +125,7 @@ params_II = pd.DataFrame(
 )
 
 
-#Assign DSS1 Description
+#Assign DSS1 Level
 def dss1_level(wqi_value):
     status = ''
     if wqi_value is not None:

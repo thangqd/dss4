@@ -186,8 +186,10 @@ class dss():
         #             )
         #             m.to_streamlit(height=700)
         # except: pass
-        def get_color_name(rgb):
-            if rgb == 'RGB(255,0,0)':
+        def get_color_name_dss1(rgb):
+            if rgb == 'RGB(126,0,35)':
+                color_name = 'darkred'
+            elif rgb == 'RGB(255,0,0)':
                 color_name = 'red'
             elif rgb == 'RGB(255,126,0)' :
                 color_name = 'orange'
@@ -195,44 +197,38 @@ class dss():
                 color_name = 'beige'
             elif rgb == 'RGB(0,228,0)' :
                 color_name = 'green'
-            else: color_name = 'purple'
-            return color_name
-        
+            elif rgb == 'RGB(51,51,255)' :
+                color_name = 'blue'
+            else: color_name = 'black'
+            return color_name        
+
         if not df.empty:
-            st.write('Select a date to view map')
-            # fd  = st.date_input("From date", pd.to_datetime(min(df['Date'])))
-            td = st.date_input("To date", pd.to_datetime(max(df['Date']))  ) 
-            # selected_date = pd.to_datetime(selected_date)
-            df["Date"] = pd.to_datetime(df["Date"]).dt.date  
-            df_filter = df.loc[(df['Date'] == td) ]
-            # st.write(selected_date)
-            if not df_filter.empty:       
-                tiles="https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png",    
-                m = folium.Map(tiles = "https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png", attr="BecaGIS Maps", location = [10.045180, 105.78841], zoom_start =8)
-                Fullscreen(                                                         
-                    position                = "topright",                                   
-                    title                   = "Open full-screen map",                       
-                    title_cancel            = "Close full-screen map",                      
-                    force_separate_button   = True,                                         
-                ).add_to(m)             
-                cluster = MarkerCluster()
-                for lat, long, Matram, Date, WQI, WQI_Level, WQI_Color in zip(df_filter.latitude, df_filter.longitude, df_filter.Matram, df_filter.Matram, df_filter.WQI, df_filter.WQI_Level, df_filter.WQI_Color):
-                    color = get_color_name(WQI_Color)
-                    # color = 'purple'
-                    icon=folium.Icon(color=color, icon='ok-circle')
-                    popContent = ("ID: " + str(Matram) + '<br>' +\
-                                                "Date : " + str(Date) + '<br>'+\
-                                                "WQI " + str(WQI) + '<br>'+\
-                                                "WQI_Level : " +  "<font color=" + color + ">" + str(WQI_Level) + "</font> ")
-                                                #   "Risk Level: {}".format(Risk_Level))
-                    iframe = folium.IFrame(popContent)
-                    popup = folium.Popup(iframe,
-                                        min_width=250,
-                                        max_width=250)   
-                    folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
-                m.add_child(cluster)            
-                folium_static(m, width = 600)
-    
+            tiles="https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png",    
+            m = folium.Map(tiles = "https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png", attr="BecaGIS Maps", location = [10.045180, 105.78841], zoom_start =8)
+            Fullscreen(                                                         
+                position                = "topright",                                   
+                title                   = "Open full-screen map",                       
+                title_cancel            = "Close full-screen map",                      
+                force_separate_button   = True,                                         
+            ).add_to(m)             
+            cluster = MarkerCluster()
+            for lat, long, Matram, Date, WQI, WQI_Level, WQI_Color in zip(df.latitude, df.longitude, df.Matram, df.Date, df.WQI, df.WQI_Level, df.WQI_Color):
+                color = get_color_name_dss1(WQI_Color)
+                # color = 'purple'
+                icon=folium.Icon(color=color, icon='ok-circle')
+                popContent = ("ID: " + str(Matram) + '<br>' +\
+                                            "Date : " + str(Date) + '<br>'+\
+                                            "WQI " + str(WQI) + '<br>'+\
+                                            "WQI_Level : " +  "<font color=" + color + ">" + str(WQI_Level) + "</font> ")
+                                            #   "Risk Level: {}".format(Risk_Level))
+                iframe = folium.IFrame(popContent)
+                popup = folium.Popup(iframe,
+                                    min_width=200,
+                                    max_width=200)   
+                folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
+            m.add_child(cluster)            
+            folium_static(m, width = 550)
+
     def viewmap_dss2(self, df,dss_status_callback = None):        
         # st.map(df)
         # try:
@@ -246,7 +242,7 @@ class dss():
         #         )
         #         m.to_streamlit(height=700)
         # except: pass
-        def get_color_name(rgb):
+        def get_color_name_dss2(rgb):
             if rgb == 'RGB(255,0,0)':
                 color_name = 'red'
             elif rgb == 'RGB(255,126,0)' :
@@ -255,8 +251,12 @@ class dss():
                 color_name = 'beige'
             elif rgb == 'RGB(0,228,0)' :
                 color_name = 'green'
-            else: color_name = 'purple'
+            elif rgb == 'RGB(51,51,255)':
+                color_name = 'blue'
+            else: color_name = 'black'
             return color_name
+        
+           
         
         if not df.empty:
             tiles="https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png",    
@@ -269,22 +269,22 @@ class dss():
             ).add_to(m)             
             cluster = MarkerCluster()
             for lat, long, ID, W_SCI1, W_SCI2, W_SCI3, W_SCI3_Level, W_SCI3_Color in zip(df.latitude, df.longitude, df.ID, df.W_SCI1, df.W_SCI2, df.W_SCI3, df.W_SCI3_Level, df.W_SCI3_Color):
-                color = get_color_name(W_SCI3_Color)
+                color = get_color_name_dss2(W_SCI3_Color)
                 # color = 'purple'
                 icon=folium.Icon(color=color, icon='ok-circle')
                 popContent = ("ID: " + str(ID) + '<br>' +\
-                                              "W_SCI1 : " + str(W_SCI1) + '<br>'+\
-                                              "W_SCI2 " + str(W_SCI2) + '<br>'+\
-                                              "W_SCI3 : " + str(W_SCI3) + '<br>'+\
+                                              "W_SCI1 : " + str(round(W_SCI1,2)) + '<br>'+\
+                                              "W_SCI2 " + str(round(W_SCI2,2)) + '<br>'+\
+                                              "W_SCI3 : " + str(round(W_SCI3,2)) + '<br>'+\
                                               "W_SCI3_Level : " +  "<font color=" + color + ">" + str(W_SCI3_Level) + "</font> ")
                                             #   "Risk Level: {}".format(Risk_Level))
                 iframe = folium.IFrame(popContent)
                 popup = folium.Popup(iframe,
-                                    min_width=250,
-                                    max_width=250)   
+                                    min_width=150,
+                                    max_width=150)   
                 folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
             m.add_child(cluster)            
-            folium_static(m, width = 600)
+            folium_static(m, width = 550)
 
 
     def viewmap_dss3(self, df,dss_status_callback = None):        
@@ -339,7 +339,7 @@ class dss():
                                     max_width=150)   
                 folium.Marker(location=[lat, long], icon=icon, popup=popup).add_to(cluster)    
             m.add_child(cluster)            
-            folium_static(m, width = 600)
+            folium_static(m, width = 550)
         # except: pass       
   
      

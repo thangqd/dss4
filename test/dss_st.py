@@ -12,10 +12,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 from dss1 import dss1_final
 from dss2 import dss2_final
 from dss3 import dss3_final
-import leafmap.foliumap as leafmap
 import folium
 from folium.plugins import MarkerCluster, FastMarkerCluster, Fullscreen
-import webcolors
 
 
 # from streamlit_extras.buy_me_a_coffee import button

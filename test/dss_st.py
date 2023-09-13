@@ -215,9 +215,9 @@ class dss():
                 # color = 'purple'
                 icon=folium.Icon(color=color, icon='ok-circle')
                 popContent = ("ID: " + str(Matram) + '<br>' +\
-                                            "Date : " + str(Date) + '<br>'+\
-                                            "WQI " + str(WQI) + '<br>'+\
-                                            "WQI_Level : " +  "<font color=" + color + ">" + str(WQI_Level) + "</font> ")
+                                            "Date: " + str(Date) + '<br>'+\
+                                            "WQI: " + str(WQI) + '<br>'+\
+                                            "WQI_Level: " +  "<font color=" + color + ">" + str(WQI_Level) + "</font> ")
                                             #   "Risk Level: {}".format(Risk_Level))
                 iframe = folium.IFrame(popContent)
                 popup = folium.Popup(iframe,
@@ -271,10 +271,10 @@ class dss():
                 # color = 'purple'
                 icon=folium.Icon(color=color, icon='ok-circle')
                 popContent = ("ID: " + str(ID) + '<br>' +\
-                                              "W_SCI1 : " + str(round(W_SCI1,2)) + '<br>'+\
-                                              "W_SCI2 " + str(round(W_SCI2,2)) + '<br>'+\
-                                              "W_SCI3 : " + str(round(W_SCI3,2)) + '<br>'+\
-                                              "W_SCI3_Level : " +  "<font color=" + color + ">" + str(W_SCI3_Level) + "</font> ")
+                                              "W_SCI1: " + str(round(W_SCI1,2)) + '<br>'+\
+                                              "W_SCI2: " + str(round(W_SCI2,2)) + '<br>'+\
+                                              "W_SCI3: " + str(round(W_SCI3,2)) + '<br>'+\
+                                              "W_SCI3_Level: " +  "<font color=" + color + ">" + str(W_SCI3_Level) + "</font> ")
                                             #   "Risk Level: {}".format(Risk_Level))
                 iframe = folium.IFrame(popContent)
                 popup = folium.Popup(iframe,
@@ -328,8 +328,8 @@ class dss():
                 icon=folium.Icon(color=color, icon='ok-circle')
                 # popup = 'ID: {}, Risk Value: {:2.0f}, Risk Level: {}'.format(ID, Risk, Risk_Level)
                 popContent = ("ID: " + str(ID) + '<br>' +\
-                                              "Risk Value : " + str(Risk) + '<br>'+\
-                                              "Risk Level : " +  "<font color=" + color + ">" + str(Risk_Level) + "</font> ")
+                                              "Risk Value: " + str(Risk) + '<br>'+\
+                                              "Risk Level: " +  "<font color=" + color + ">" + str(Risk_Level) + "</font> ")
                                             #   "Risk Level: {}".format(Risk_Level))
                 iframe = folium.IFrame(popContent)
                 popup = folium.Popup(iframe,

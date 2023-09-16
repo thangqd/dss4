@@ -25,7 +25,6 @@ st.set_page_config(
             layout="centered",
             initial_sidebar_state="auto",
             menu_items={
-                'Report a bug': "https://github.com/thangqd/dss",
                 'About': "https://thangqd.github.io"
             }
 )

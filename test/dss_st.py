@@ -202,7 +202,7 @@ class dss():
 
         if not df.empty:
             tiles="https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png",    
-            m = folium.Map(tiles = "https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{-y}.png", attr="BecaGIS Maps", location = [10.045180, 105.78841], zoom_start =8)
+            m = folium.Map(tiles = "https://maps.becagis.vn/tiles/basemap/light/{z}/{x}/{y}.png", attr="BecaGIS Maps", location = [10.045180, 105.78841], zoom_start =8)
             Fullscreen(                                                         
                 position                = "topright",                                   
                 title                   = "Open full-screen map",                       

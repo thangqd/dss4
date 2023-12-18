@@ -13,6 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 from dss1 import dss1_final
 from dss2 import dss2_final
 from dss3 import dss3_final
+from dss4 import dss4_final
 import folium
 from folium.plugins import MarkerCluster, FastMarkerCluster, Fullscreen
 
@@ -35,7 +36,7 @@ class dss():
         st.subheader("©2023 by watertech.vn")    
     def gui(self):    
         DSS_list = ['DSS1','DSS2','DSS3','DSS4','DSS6']
-        DSS_url = ['./data/dss1.csv','./data/dss2.csv','./data/dss3.csv','./data/dss3.csv','./data/dss3.csv']                
+        DSS_url = ['./data/dss1.csv','./data/dss2.csv','./data/dss3.csv','./data/dss4.csv','./data/dss6.csv']                
         self.dss_calc = st.selectbox('Choose a DSS to calculate',DSS_list)
         self.selected_index = DSS_list.index(self.dss_calc)
         self.url = st.text_input(
@@ -43,7 +44,7 @@ class dss():
             DSS_url[self.selected_index]
         )
         self.uploaded_file = st.file_uploader("Or upload a CSV file")
-        dss1, dss2, dss3 = None, None, None
+        dss1, dss2, dss3, dss4 = None, None, None, None
         form = st.form(key="form_settings")
         with form:           
             # self.uploaded_file = os.path.join(os.path.dirname(__file__), '../data/dss1.csv')
@@ -87,7 +88,10 @@ class dss():
                         # self.download_csv(dss3,self.dss_status_callback)
                         # self.download_geojson(dss3,self.dss_status_callback)
                         # self.viewmap_dss3(dss3,dss_status_callback = None)
-
+                    elif self.dss_calc == "DSS4":
+                        dss4 = dss4_final(self.url,self.dss_status_callback)
+                        st.write (dss4)
+                
                 elif self.uploaded_file:
                     # self.dss_result = self.calculate_dss(self.uploaded_file,self.fromdate,self.todate, self.dss_status_callback)
                     if self.dss_calc == 'DSS1': 
@@ -120,6 +124,9 @@ class dss():
                     # self.download_geojson(dss3,self.dss_status_callback)
                     # self.viewmap_dss3(dss3,dss_status_callback = None)
                     # st.button('Calculate DSS', on_click=self.dss_result)  
+                elif self.dss_calc == "DSS4":
+                    dss4 = dss4_final(self.url,self.dss_status_callback)
+                    st.write (dss4)
         if dss1 is not None:
             self.viewmap_dss1(dss1,self.dss_status_callback)
             self.download_csv(dss1,self.dss_status_callback)
@@ -135,6 +142,9 @@ class dss():
             self.viewmap_dss3(dss3,self.dss_status_callback)
             self.download_csv(dss3,self.dss_status_callback)
             self.download_geojson(dss3,self.dss_status_callback)
+
+        if dss4 is not None:
+            self.download_csv(dss4,self.dss_status_callback)
 
 
         st.divider()

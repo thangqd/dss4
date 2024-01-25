@@ -4,3 +4,4 @@ pandas
 geopandas
 streamlit-folium 
 statsmodels
+matplotlib

@@ -3,8 +3,6 @@ from pandas.api.types import is_numeric_dtype
 pd.options.mode.copy_on_write = True
 from datetime import datetime
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-import matplotlib.pyplot as plt
-
 
 # Calculate DSS1
 def dss4_preprocessing (input):

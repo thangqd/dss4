@@ -31,7 +31,7 @@ st.set_page_config(
 
 class dss():    
     def __init__(self):
-        st.header("DSS Calculation Module")
+        st.header("MKDC DSS 4 - Coastal Salinity Index Forcasting")
         # st.subheader("©2023 by watertech.vn")    
     def gui(self):    
         DSS_list = ['DSS4']
@@ -51,7 +51,7 @@ class dss():
             #     if self.dss_calc == 'DSS1':
             #         self.fromdate  = st.date_input("From date", pd.to_datetime('today')- timedelta(days=1000))
             #         self.todate = st.date_input("To date", pd.to_datetime('today'))                
-            submitted = st.form_submit_button("Calculate DSS")
+            submitted = st.form_submit_button("Run CSI Forecast")
             
             if submitted:
                 self.status_lable ="Calculation progress"

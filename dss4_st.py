@@ -44,6 +44,7 @@ class dss4():
             dss4 = None                                       
             submitted = st.form_submit_button("Run CSI Forecast")
                 
+                
         if submitted:
             self.status_lable ="Calculation progress"
             status_bar = st.progress(0, text=self.status_lable)

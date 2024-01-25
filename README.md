@@ -5,7 +5,7 @@ This repository contains code for Decision Support System 4 within the Mekong De
 
 # Saltwater intrusion forecast Decision Support System for the Mekong Delta
 
-- DSS 4 is designed to forecast the saltwater instrusion for the Mekong Delta Centre. 
+- DSS 4 is designed to forecast the Coastal Salinity Index for the Mekong Delta Centre. 
 
 
 ## Prerequisites

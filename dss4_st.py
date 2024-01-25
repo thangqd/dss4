@@ -20,7 +20,7 @@ from folium.plugins import MarkerCluster, FastMarkerCluster, Fullscreen
 # from streamlit_extras.buy_me_a_coffee import button
 from datetime import timedelta
 st.set_page_config(
-            page_title="DSS Calculation Module",
+            page_title="MKDC DSS 4 - Coastal Salinity Index Forcasting",
             page_icon=":aquarius:",
             layout="centered",
             initial_sidebar_state="auto",
@@ -32,7 +32,7 @@ st.set_page_config(
 class dss():    
     def __init__(self):
         st.header("DSS Calculation Module")
-        st.subheader("©2023 by watertech.vn")    
+        # st.subheader("©2023 by watertech.vn")    
     def gui(self):    
         DSS_list = ['DSS4']
         DSS_url = ['./data/dss4.csv']                
@@ -146,8 +146,8 @@ class dss():
         #     self.download_csv(dss4,self.dss_status_callback)
 
 
-        st.divider()
-        st.caption("Coded by [Thang Quach](https://thangqd.github.io)")
+        # st.divider()
+        # st.caption("Coded by [Thang Quach](https://thangqd.github.io)")
         # button(username="quachdongthang", floating=False, width=221)
 
     

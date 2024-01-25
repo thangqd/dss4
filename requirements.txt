@@ -3,3 +3,4 @@ streamlit-ext
 pandas
 geopandas
 streamlit-folium 
+statsmodels

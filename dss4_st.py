@@ -22,7 +22,7 @@ from datetime import timedelta
 st.set_page_config(
             page_title="MKDC DSS 4 - CSI Forecast",
             page_icon=":aquarius:",
-            layout="centered",
+            layout="wide",
             initial_sidebar_state="auto",
             menu_items={
                 'About': "https://thangqd.github.io"
@@ -33,32 +33,36 @@ class dss4():
     def __init__(self):
         st.header("MKDC DSS 4 - Coastal Salinity Index Forecast")
         # st.subheader("©2023 by watertech.vn")    
-    def gui(self):      
-        form = st.form(key="dss4")    
-        with form:   
-            self.url = st.text_input(
-            "Enter DSS data URL",
-            "./data/dss4.csv"
-            )
-            self.uploaded_file = st.file_uploader("Or upload a CSV file")
-            dss4 = None                                       
-            submitted = st.form_submit_button("Run CSI Forecast")
-                
-                
+    def gui(self):     
+        col1, col2 = st.columns(2)
+        with col1: 
+            form = st.form(key="dss4")    
+            with form:   
+                self.url = st.text_input(
+                "Enter DSS data URL",
+                "./data/dss4.csv"
+                )
+                self.uploaded_file = st.file_uploader("Or upload a CSV file")
+                dss4 = None                                       
+                submitted = st.form_submit_button("Run CSI Forecast")
+                    
+                    
         if submitted:
-            self.status_lable ="Calculation progress"
-            status_bar = st.progress(0, text=self.status_lable)
-            self.status_bar= status_bar
-            if self.url:  
-                dss4 = dss4_final(self.url,self.dss_status_callback)
-                st.write (dss4)                
-            elif self.uploaded_file:                 
-                dss4 = dss4_final(self.url,self.dss_status_callback)
-                st.write (dss4)
+            with col2:
+                self.status_lable ="Calculation progress"
+                status_bar = st.progress(0, text=self.status_lable)
+                self.status_bar= status_bar
 
-        if dss4 is not None:
-            self.download_csv(dss4,self.dss_status_callback)
-            
+                if self.url:  
+                    dss4 = dss4_final(self.url,self.dss_status_callback)      
+                    
+                elif self.uploaded_file:                 
+                    dss4 = dss4_final(self.url,self.dss_status_callback)       
+
+                st.table(dss4[['S1', 'S2', 'S3', 'S4']].describe())
+                st.write (dss4)
+                if dss4 is not None:
+                    self.download_csv(dss4,self.dss_status_callback)            
         
     def loadata(self, input, fd, td):    
         # df_filter = df.loc[fromdate:todate]

@@ -1,4 +1,4 @@
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://dss4.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mkdc-dss4.streamlit.app/)
 
 # MKDC DSS 4
 This repository contains code for Decision Support System 4 within the Mekong Delta Centre.

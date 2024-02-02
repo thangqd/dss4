@@ -35,7 +35,7 @@ class dss4():
             with form:   
                 self.url = st.text_input(
                 "Enter DSS data URL",
-                "./data/dss4.csv"
+                "./data/Electric_Production.csv"
                 )
                 self.uploaded_file = st.file_uploader("Or upload a CSV file")
                 submitted = st.form_submit_button("Run CSI Forecast")                    
@@ -50,7 +50,7 @@ class dss4():
                 # df.set_index('Datetime', inplace=True)
                 st.table(df[['S1']].describe())
                 if self.url:                     
-                   trainScore, testScore, Train, testPredict = dss4_final(self.url,self.dss_status_callback)        
+                   trainScore, testScore, Train,trainPredict, testPredict = dss4_final(self.url,self.dss_status_callback)        
                     
                 elif self.uploaded_file:                 
                    trainScore, testScore, Train,trainPredict, testPredict = dss4_final(self.url,self.dss_status_callback)     
@@ -61,7 +61,7 @@ class dss4():
                 
                 fig, ax = plt.subplots()
                 ax.plot(Train, label='Train')
-                ax.plot(testPredict, label='trainPredict')
+                ax.plot(trainPredict, label='trainPredict')
                 ax.plot(testPredict, label='testPredict')
 
                 # Customize the plot if needed

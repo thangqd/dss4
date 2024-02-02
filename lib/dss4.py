@@ -162,7 +162,7 @@ def dss4_lstm(df):
     # model.fit(trainX, trainY, epochs=5, batch_size=1, verbose=2)
     for i in range(10):
         model.fit(trainX, trainY, epochs=1, batch_size=1, verbose=2)
-    # make predictions
+    ## make predictions
     trainPredict = model.predict(trainX)
     testPredict = model.predict(testX)
     # invert predictions
@@ -175,13 +175,17 @@ def dss4_lstm(df):
     print('Train Score: %.2f RMSE' % (trainScore))
     testScore = math.sqrt(mean_squared_error(testY[0], testPredict[:,0]))
     print('Test Score: %.2f RMSE' % (testScore))
-    
-    
-    # plt.plot(scaler.inverse_transform(df[train_size+1:]))
-    # plt.plot(testPredict)
-    # # plt.savefig('./images/forecast.jpg')
+
+    # shift train predictions for plotting
+    trainPredictPlot = np.empty_like(df)
+    trainPredictPlot[:, :] = np.nan
+    trainPredictPlot[look_back:len(trainPredict)+look_back, :] = trainPredict
+    # shift test predictions for plotting
+    testPredictPlot = np.empty_like(df)
+    testPredictPlot[:, :] = np.nan
+    testPredictPlot[len(trainPredict)+(look_back*2)+1:len(df)-1, :] = testPredict
     K.clear_session()
-    return trainScore, testScore, scaler.inverse_transform(df[train_size+1:]), testPredict
+    return trainScore, testScore, scaler.inverse_transform(df[train_size+1:]), trainPredict, testPredict
 
 
 
@@ -197,7 +201,7 @@ def dss4_final (input, status_callback):
     else:
         print(label) 
 
-    trainScore, testScore, Train, testPredict = dss4_lstm(df)
+    trainScore, testScore, Train,trainPredict, testPredict = dss4_lstm(df)
     i+=1
     percent = int((i/steps)*100)
     label = str(i)+ '/'+ str(steps)+ '. Running LSTM forecast'    
@@ -206,4 +210,4 @@ def dss4_final (input, status_callback):
     else:
         print(label) 
 
-    return trainScore, testScore, Train, testPredict
+    return trainScore, testScore, Train, trainPredict, testPredict

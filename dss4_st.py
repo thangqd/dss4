@@ -4,8 +4,9 @@ import pandas as pd
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '.', 'lib'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '.', 'data'))
-
+import numpy as np
 from dss4 import dss4_final
+import matplotlib.pyplot as plt
 
 
 
@@ -52,12 +53,24 @@ class dss4():
                    trainScore, testScore, Train, testPredict = dss4_final(self.url,self.dss_status_callback)        
                     
                 elif self.uploaded_file:                 
-                   trainScore, testScore, Train, testPredict = dss4_final(self.url,self.dss_status_callback)     
+                   trainScore, testScore, Train,trainPredict, testPredict = dss4_final(self.url,self.dss_status_callback)     
                 st.write('Train Score: %.2f RMSE' % (trainScore))
                 st.write('Test Score: %.2f RMSE' % (testScore))
-                # Visualize the results
-                chart_data = {'Train': Train, 'testPredict': testPredict}
-                st.line_chart(chart_data)
+                
+                #Visualize the results              
+                
+                fig, ax = plt.subplots()
+                ax.plot(Train, label='Train')
+                ax.plot(testPredict, label='trainPredict')
+                ax.plot(testPredict, label='testPredict')
+
+                # Customize the plot if needed
+                # ax.set_xlabel('X-axis label')
+                # ax.set_ylabel('Y-axis label')
+                # ax.set_title('Two NumPy Arrays on a Single Chart')
+                ax.legend()
+                # Show the plot using st.pyplot
+                st.pyplot(fig)
 
                 # if testPredict is not None:
                 #     self.download_csv(testPredict,self.dss_status_callback)            

@@ -56,12 +56,9 @@ class dss4():
                 st.write('Train Score: %.2f RMSE' % (trainScore))
                 st.write('Test Score: %.2f RMSE' % (testScore))
                 # Visualize the results
-                st.write(Train)
-                st.write(Train.describe())
-                st.write(testPredict)
-                st.write(testPredict.describe())
-                st.line_chart(Train)
-                st.line_chart(testPredict)
+                chart_data = {'Train': Train, 'testPredict': testPredict}
+                st.line_chart(chart_data)
+
                 # if testPredict is not None:
                 #     self.download_csv(testPredict,self.dss_status_callback)            
     

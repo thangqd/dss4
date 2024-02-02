@@ -3,5 +3,8 @@ streamlit-ext
 pandas
 geopandas
 streamlit-folium 
-statsmodels
+keras
+sklearn
 matplotlib
+seaborn
+tensorflow

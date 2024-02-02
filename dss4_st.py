@@ -1,20 +1,12 @@
 import streamlit as st
 import streamlit_ext as ste
-# import os
 import pandas as pd
-import geopandas as gpd
-import numpy as np
-# import json
-# import requests
-from streamlit_folium import st_folium, folium_static
-# from pandas.api.types import is_numeric_dtype
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '.', 'lib'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '.', 'data'))
 
 from dss4 import dss4_final
-import folium
-from folium.plugins import MarkerCluster, FastMarkerCluster, Fullscreen
+
 
 
 # from streamlit_extras.buy_me_a_coffee import button
@@ -29,7 +21,9 @@ st.set_page_config(
             }
 )
 
-class dss4():    
+class dss4():  
+    selected_plot, x_axis, y_axis = None, None, None
+
     def __init__(self):
         st.header("MKDC DSS 4 - Coastal Salinity Index Forecast")
         # st.subheader("©2023 by watertech.vn")    
@@ -43,27 +37,35 @@ class dss4():
                 "./data/dss4.csv"
                 )
                 self.uploaded_file = st.file_uploader("Or upload a CSV file")
-                dss4 = None                                       
-                submitted = st.form_submit_button("Run CSI Forecast")
-                    
+                submitted = st.form_submit_button("Run CSI Forecast")                    
                     
         if submitted:
             with col2:
                 self.status_lable ="Calculation progress"
                 status_bar = st.progress(0, text=self.status_lable)
                 self.status_bar= status_bar
-
-                if self.url:  
-                    dss4 = dss4_final(self.url,self.dss_status_callback)      
+                df = pd.read_csv(self.url,encoding = "UTF-8") # depend on exisitng dss4.csv file
+                df["Datetime"] =  pd.to_datetime(df["Datetime"],dayfirst=True)
+                # df.set_index('Datetime', inplace=True)
+                st.table(df[['S1']].describe())
+                if self.url:                     
+                   trainScore, testScore, Train, testPredict = dss4_final(self.url,self.dss_status_callback)        
                     
                 elif self.uploaded_file:                 
-                    dss4 = dss4_final(self.url,self.dss_status_callback)       
-
-                st.table(dss4[['S1', 'S2', 'S3', 'S4']].describe())
-                st.write (dss4)
-                if dss4 is not None:
-                    self.download_csv(dss4,self.dss_status_callback)            
-        
+                   trainScore, testScore, Train, testPredict = dss4_final(self.url,self.dss_status_callback)     
+                st.write('Train Score: %.2f RMSE' % (trainScore))
+                st.write('Test Score: %.2f RMSE' % (testScore))
+                # Visualize the results
+                st.write(Train)
+                st.write(Train.describe())
+                st.write(testPredict)
+                st.write(testPredict.describe())
+                st.line_chart(Train)
+                st.line_chart(testPredict)
+                # if testPredict is not None:
+                #     self.download_csv(testPredict,self.dss_status_callback)            
+    
+    
     def loadata(self, input, fd, td):    
         # df_filter = df.loc[fromdate:todate]
         df = pd.read_csv(input,skiprows=[1])
